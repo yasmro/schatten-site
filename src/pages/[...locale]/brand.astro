@@ -9,6 +9,13 @@
 // Note: §4 of that document (the open question about the calligraphy
 // provenance) is deliberately NOT rendered here — it stays internal until
 // settled.
+//
+// Built from Schatten's React components (Text / Separator), rendered to
+// static HTML at build time — see CLAUDE.md. The colour ramps, swatches,
+// gradation strip, and type specimen stay bespoke: they are the brand VALUES
+// being documented, and no component renders a palette. Their literal OKLCH
+// values are the subject, not styling.
+import { Separator, Text } from '@yasmro/schatten'
 import Base from '../../layouts/Base.astro'
 import { defaultLocale, type Locale, locales, ui } from '../../i18n/ui'
 
@@ -90,8 +97,8 @@ const leadings = [
   <main class="brand">
     <header class="brand__masthead">
       <h1 class="brand__mark">陰影<span class="brand__gloss">Schatten · Brand Concept</span></h1>
-      <p class="brand__thesis" set:html={t.thesis} />
-      <p class="brand__origin" set:html={t.origin} />
+      <Text as="p" variant="heading" size="lg" family="serif" leading="relaxed" className="brand__thesis" set:html={t.thesis} />
+      <Text as="p" size="sm" color="muted" leading="relaxed" className="brand__origin" set:html={t.origin} />
     </header>
 
     <div class="brand__gradation" aria-hidden="true">
@@ -102,10 +109,10 @@ const leadings = [
     <div class="brand__body">
       <section>
         <div class="brand__eyebrow">
-          <span class="brand__label">{t.colorLabel}</span>
+          <Text as="span" variant="label" size="xs" color="muted" className="brand__label">{t.colorLabel}</Text>
         </div>
-        <h2>{t.colorTitle}</h2>
-        <p set:html={t.colorLead} />
+        <Text as="h2" variant="heading" size="xl" family="serif" className="brand__h2">{t.colorTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.colorLead} />
 
         <div class="four">
           {
@@ -113,17 +120,17 @@ const leadings = [
               <div class="four__cell">
                 <div class="four__chip" style={`background:${fourChips[i]}`} />
                 <div>
-                  <div class="four__name">{c.name}</div>
-                  <div class="four__token">{c.token}</div>
+                  <Text as="span" family="serif" size="lg">{c.name}</Text>
+                  <Text as="span" size="xs" color="muted" className="four__token">{c.token}</Text>
                 </div>
-                <div class="four__role">{c.role}</div>
+                <Text as="span" size="xs" color="muted" leading="relaxed">{c.role}</Text>
               </div>
             ))
           }
         </div>
 
-        <h3>{t.warmCoolTitle}</h3>
-        <p set:html={t.warmCoolLead} />
+        <Text as="h3" variant="heading" size="md" family="serif" className="brand__h3">{t.warmCoolTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.warmCoolLead} />
 
         <div class="warmcool" aria-hidden="true">
           <div class="warmcool__head" />
@@ -137,8 +144,8 @@ const leadings = [
           <div><span class="dot" style="background:oklch(0.46 0.15 265)" />indigo · h265</div>
         </div>
 
-        <h4>{t.mirrorTitle}</h4>
-        <p set:html={t.mirrorLead} />
+        <Text as="h4" variant="heading" size="sm" family="serif" className="brand__h4">{t.mirrorTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.mirrorLead} />
 
         <div class="ramps" aria-hidden="true">
           <div class="ramps__row">
@@ -159,7 +166,7 @@ const leadings = [
           </div>
         </div>
 
-        <h4>{t.chromaticRampTitle}</h4>
+        <Text as="h4" variant="heading" size="sm" family="serif" className="brand__h4">{t.chromaticRampTitle}</Text>
         <div class="ramps" aria-hidden="true">
           <div class="ramps__row">
             <span class="ramps__name">朱 h30</span>
@@ -172,17 +179,17 @@ const leadings = [
             <div class="ramps__ramp">{indigoRamp.map((c) => <span style={`background:${c}`} />)}</div>
           </div>
         </div>
-        <p class="brand__note" set:html={t.oklchNote} />
+        <Text as="p" size="sm" color="muted" leading="relaxed" set:html={t.oklchNote} />
       </section>
 
-      <hr class="brand__hr" />
+      <Separator className="brand__hr" />
 
       <section>
         <div class="brand__eyebrow">
-          <span class="brand__label">{t.seasonsLabel}</span>
+          <Text as="span" variant="label" size="xs" color="muted" className="brand__label">{t.seasonsLabel}</Text>
         </div>
-        <h2>{t.seasonsTitle}</h2>
-        <p set:html={t.seasonsLead} />
+        <Text as="h2" variant="heading" size="xl" family="serif" className="brand__h2">{t.seasonsTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.seasonsLead} />
       </section>
     </div>
 
@@ -199,16 +206,16 @@ const leadings = [
         ))
       }
     </ul>
-    <p class="brand__strip-note">{t.seasonsNote}</p>
+    <Text as="p" size="sm" color="muted" align="center" leading="relaxed" className="brand__strip-note">{t.seasonsNote}</Text>
 
     <div class="brand__body">
       <section>
         <div class="brand__eyebrow">
-          <span class="brand__label">{t.typeLabel}</span>
+          <Text as="span" variant="label" size="xs" color="muted" className="brand__label">{t.typeLabel}</Text>
         </div>
-        <h2>{t.typeTitle}</h2>
-        <p set:html={t.typeLead1} />
-        <p set:html={t.typeLead2} />
+        <Text as="h2" variant="heading" size="xl" family="serif" className="brand__h2">{t.typeTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.typeLead1} />
+        <Text as="p" leading="loose" set:html={t.typeLead2} />
 
         <div class="faces">
           <div class="faces__cell faces__cell--sans">
@@ -225,8 +232,8 @@ const leadings = [
           </div>
         </div>
 
-        <h3>{t.scaleTitle}</h3>
-        <p set:html={t.scaleLead} />
+        <Text as="h3" variant="heading" size="md" family="serif" className="brand__h3">{t.scaleTitle}</Text>
+        <Text as="p" leading="loose" set:html={t.scaleLead} />
 
         <div class="specimen">
           {
@@ -256,14 +263,14 @@ const leadings = [
           }
         </div>
 
-        <p class="brand__note" set:html={t.roleNote} />
+        <Text as="p" size="sm" color="muted" leading="relaxed" set:html={t.roleNote} />
       </section>
 
     </div>
   </main>
 </Base>
 
-<style>
+<style is:global>
   /* The brand page sets its own rhythm: serif prose on a narrower measure than
    * the landing, because it is read rather than scanned. */
   .brand {
@@ -306,14 +313,11 @@ const leadings = [
 
   .brand__thesis {
     margin: var(--spacing-12) 0 0;
-    font-family: var(--font-serif);
-    font-size: var(--text-2xl);
-    line-height: 1.65;
     text-wrap: balance;
     word-break: auto-phrase;
   }
 
-  .brand__thesis :global(em) {
+  .brand__thesis em {
     font-style: normal;
     color: var(--color-vermillion);
   }
@@ -324,13 +328,9 @@ const leadings = [
   .brand__origin {
     margin: var(--spacing-4) 0 0;
     max-width: 36rem;
-    font-family: var(--font-sans);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    color: var(--color-foreground-muted);
   }
 
-  .brand__origin :global(em) {
+  .brand__origin em {
     font-style: italic;
   }
 
@@ -371,33 +371,21 @@ const leadings = [
   }
 
   .brand__label {
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-foreground-muted);
   }
 
-  .brand h2 {
+  /* Heading rhythm — size / weight / face come from <Text>. */
+  .brand__h2 {
     margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: var(--text-3xl);
-    line-height: var(--leading-tight, 1.25);
     text-wrap: balance;
   }
 
-  .brand h3 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: var(--text-xl);
+  .brand__h3 {
     margin: var(--spacing-10) 0 var(--spacing-2);
   }
 
-  .brand h4 {
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: var(--text-lg);
+  .brand__h4 {
     margin: var(--spacing-8) 0 var(--spacing-2);
   }
 
@@ -405,26 +393,18 @@ const leadings = [
     margin: var(--spacing-4) 0;
   }
 
-  .brand :global(strong) {
+  .brand strong {
     font-weight: 400;
     color: var(--color-vermillion);
   }
 
-  .brand :global(code) {
+  .brand code {
     font-family: var(--font-mono);
     font-size: 0.85em;
     color: var(--color-foreground-muted);
   }
 
-  .brand__note {
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    color: var(--color-foreground-muted);
-  }
-
   .brand__hr {
-    border: 0;
-    border-top: 1px solid var(--color-border);
     margin: 0;
   }
 
@@ -451,23 +431,8 @@ const leadings = [
     border-radius: var(--radius-control);
   }
 
-  .four__name {
-    font-family: var(--font-serif);
-    font-size: var(--text-lg);
-  }
-
   .four__token {
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
     letter-spacing: 0.1em;
-    color: var(--color-foreground-muted);
-  }
-
-  .four__role {
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
-    line-height: 1.6;
-    color: var(--color-foreground-muted);
   }
 
   /* ---- warm / cool ---- */
@@ -590,12 +555,8 @@ const leadings = [
   }
 
   .brand__strip-note {
-    font-size: var(--text-sm);
-    color: var(--color-foreground-muted);
-    text-align: center;
     padding: var(--spacing-4) var(--spacing-8);
     margin: 0;
-    line-height: 1.6;
   }
 
   /* ---- faces ---- */

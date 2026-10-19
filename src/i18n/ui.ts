@@ -122,7 +122,7 @@ export const ui: Record<Locale, Strings> = {
         'Schatten design system — React components and a framework-agnostic CSS class API on one token foundation.',
       heroTitle: 'Interfaces with shadow, shipped in two layers.',
       heroLead:
-        'React components, and CSS classes you can use in plain HTML. Schatten ships both on one set of design tokens.<br>This page is proof of the second — no React, painted by the single stylesheet we publish.',
+        'React components, and CSS classes you can use in plain HTML. Schatten ships both on one set of design tokens.<br>This page is built with the React components and rendered to static HTML at build time; what reaches your browser is that HTML and the single stylesheet we publish.',
       ctaGetStarted: 'Get started',
       ctaStorybook: 'View Storybook',
       proofTitle: 'One button, two ways to write it',
@@ -230,7 +230,7 @@ export const ui: Record<Locale, Strings> = {
       lead: 'The full catalog — stories, props, and every visual state — lives in <a href="%STORYBOOK%">Storybook</a>. This page is the index, plus one living proof: a corner of it runs the real React layer.',
       liveTitle: 'Live — this corner is a React island',
       liveDesc:
-        'Everything else on this site is static HTML painted by the published CSS. This card hydrates the real React components through the same exports map a consumer uses: real state, real events, real ARIA wiring.',
+        'The rest of this site uses the same React components, rendered to static HTML at build time with no JavaScript shipped. This card hydrates them for real — real state, real events, real ARIA wiring — through the same exports map a consumer uses.',
       saveLabel: 'Save',
       savingDoneLabel: 'Saved ✓',
       switchLabel: 'Notifications',
@@ -253,7 +253,7 @@ export const ui: Record<Locale, Strings> = {
         'Schatten design system — React コンポーネントと、フレームワークに依存しない CSS クラス API を、共通のトークン基盤の上に。',
       heroTitle: '陰影のあるインターフェースを、ふたつの配信層で。',
       heroLead:
-        'React のコンポーネントと、素の HTML で使える CSS クラス。Schatten はこの両方を、共通のデザイントークンの上で提供しています。<br>このページ自体がその証拠です。React は使わず、配布している CSS 1 枚だけで描かれています。',
+        'React のコンポーネントと、素の HTML で使える CSS クラス。Schatten はこの両方を、共通のデザイントークンの上で提供しています。<br>このページ自体も React コンポーネントで組み、ビルド時に静的 HTML へ書き出しています。ブラウザに届くのは、その HTML と配布している CSS 1 枚です。',
       ctaGetStarted: 'Get started',
       ctaStorybook: 'Storybook を見る',
       proofTitle: 'ひとつのボタン、ふたつの書き方',
@@ -349,7 +349,7 @@ export const ui: Record<Locale, Strings> = {
       lead: '完全なカタログ(stories・props・全状態)は <a href="%STORYBOOK%">Storybook</a> にある。このページはその索引であり、ひとつの生きた証明でもある。ページの一角だけ、本物の React 層が動いている。',
       liveTitle: 'Live — この一角だけ React island',
       liveDesc:
-        'このサイトの他の場所はすべて、配布 CSS で描かれた静的 HTML。ここだけが本物の React コンポーネントを hydrate していて、state もイベントも ARIA 配線も実際に動く。利用者が使うのと同じ exports map を、そのまま経由している。',
+        'サイトの他の部分も同じ React コンポーネントで組んでいるが、ビルド時に静的 HTML へ書き出していて JavaScript は届かない。この一角だけは hydrate していて、state もイベントも ARIA 配線も実際に動く。利用者が使うのと同じ exports map を、そのまま経由している。',
       saveLabel: '保存',
       savingDoneLabel: '保存しました ✓',
       switchLabel: '通知',

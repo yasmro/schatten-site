@@ -19,6 +19,13 @@ is the installed package version.
 A new library release reaches the site as a Dependabot bump PR. CI runs the gates below; merging
 to `main` deploys.
 
+## Authoring rule
+
+The site is built from Schatten's own React components, rendered to static HTML by Astro at
+build time (React is shipped only for the live demo). Raw `.st-*` markup appears only where the
+markup is the thing being shown; bespoke CSS covers layout and the brand page's palette
+visuals. Details and the two Astro-specific mechanics are in [CLAUDE.md](CLAUDE.md).
+
 ## Gates
 
 ```sh

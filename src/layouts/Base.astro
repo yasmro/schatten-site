@@ -2,14 +2,18 @@
 // The site shell: document head, theme plumbing, header, footer.
 // Pages supply only their own content and their own <style>.
 //
-// The site is the dogfood — no React, no Tailwind, only `.st-*` classes and
-// semantic tokens from the published CSS surface, consumed through the exports
-// map, from npm. The only JavaScript is the theme
+// Authoring rule (CLAUDE.md): the chrome is built from Schatten's React
+// components — `Button` / `Text` / `Icon` — consumed from npm and rendered to
+// static HTML by Astro at build time. No `client:` directive here, so no React
+// reaches the browser from this file. The only JavaScript is the theme
 // plumbing below, which dogfoods the non-React consumption path of
 // `@yasmro/schatten/theme-init`.
 import '@yasmro/schatten/schatten.css'
+import { Button, Icon, Text } from '@yasmro/schatten'
 import { THEME_INIT_SCRIPT } from '@yasmro/schatten/theme-init'
+import { Moon, Sun } from 'lucide-react'
 import GoogleFonts from '../components/GoogleFonts.astro'
+import LinkButton from '../components/LinkButton'
 import { type Locale, localePath, locales, ui } from '../i18n/ui'
 import { STORYBOOK_ORIGIN } from '../lib/storybook-links.mjs'
 
@@ -60,66 +64,51 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
   </head>
   <body>
     <header class="site-header">
-      <a href={localePath(locale)} class="site-header__brand">Schatten</a>
+      <a href={localePath(locale)} class="site-header__brand">
+        <Text as="span" variant="heading" size="sm" family="serif">Schatten</Text>
+      </a>
       <nav class="site-header__nav">
-        <a href={`${localePath(locale)}components/`}>{t.common.navComponents}</a>
-        <a href={`${localePath(locale)}brand/`}>{t.common.navBrand}</a>
-        <a href="https://github.com/yasmro/schatten">GitHub</a>
-        <a href={STORYBOOK_ORIGIN}>Storybook</a>
-        <a href={hrefFor(otherLocale)} class="site-header__lang" lang={otherLocale}>
+        <LinkButton variant="tertiary" size="sm" href={`${localePath(locale)}components/`}>
+          {t.common.navComponents}
+        </LinkButton>
+        <LinkButton variant="tertiary" size="sm" href={`${localePath(locale)}brand/`}>
+          {t.common.navBrand}
+        </LinkButton>
+        <LinkButton variant="tertiary" size="sm" href="https://github.com/yasmro/schatten">GitHub</LinkButton>
+        <LinkButton variant="tertiary" size="sm" href={STORYBOOK_ORIGIN}>Storybook</LinkButton>
+        <span class="site-header__divider" aria-hidden="true"></span>
+        <LinkButton variant="tertiary" size="sm" href={hrefFor(otherLocale)} lang={otherLocale}>
           {t.common.langSwitchLabel}
-        </a>
-        <button
+        </LinkButton>
+        <Button
           type="button"
-          class="theme-toggle"
+          variant="tertiary"
+          size="sm"
           data-theme-toggle
           aria-label={t.common.themeToggleLabel}
           title={t.common.themeToggleLabel}
         >
-          <svg
-            class="theme-toggle__icon theme-toggle__icon--moon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-          <svg
-            class="theme-toggle__icon theme-toggle__icon--sun"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="4"></circle>
-            <path
-              d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-            ></path>
-          </svg>
-        </button>
+          <Icon icon={Moon} size="sm" className="theme-toggle__icon theme-toggle__icon--moon" />
+          <Icon icon={Sun} size="sm" className="theme-toggle__icon theme-toggle__icon--sun" />
+        </Button>
       </nav>
     </header>
 
     <slot />
 
     <footer class="site-footer">
-      <span>© yasmro — MIT License</span>
+      <Text as="span" size="sm" color="subtle">© yasmro — MIT License</Text>
     </footer>
     <script is:inline set:html={THEME_TOGGLE_SCRIPT} />
   </body>
 </html>
 
 <style is:global>
-  /* Shell layout only. Colors / spacing / type all come from Schatten's public
-   * tokens so the site re-themes with the token layer (dark mode included)
-   * without any page-side logic. */
+  /* Shell LAYOUT only. Type, color, and controls come from the Schatten
+   * components above; the tokens below are spacing / border only, so the site
+   * re-themes with the token layer (dark mode included) without page-side
+   * logic. `is:global` because the elements these rules reach are rendered by
+   * React components, which Astro's scoped styles cannot see. */
   body {
     margin: 0;
     min-height: 100dvh;
@@ -131,58 +120,33 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-4);
     padding: var(--spacing-4) var(--spacing-8);
     border-bottom: 1px solid var(--color-border);
   }
 
   .site-header__brand {
-    font-weight: 700;
-    font-size: var(--text-lg);
-    letter-spacing: 0.06em;
     color: inherit;
     text-decoration: none;
+    letter-spacing: 0.06em;
   }
 
   .site-header__nav {
     display: flex;
-    gap: var(--spacing-6);
+    gap: var(--spacing-1);
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .site-header__nav a {
-    color: var(--color-foreground-muted);
     text-decoration: none;
-    font-size: var(--text-sm);
   }
 
-  .site-header__nav a:hover {
-    color: var(--color-foreground);
-  }
-
-  .site-header__lang {
-    border-left: 1px solid var(--color-border);
-    padding-left: var(--spacing-6);
-  }
-
-  /* ---- theme toggle ---- */
-  .theme-toggle {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    color: var(--color-foreground-muted);
-  }
-
-  .theme-toggle:hover {
-    color: var(--color-foreground);
-  }
-
-  .theme-toggle__icon {
-    width: 1.1rem;
-    height: 1.1rem;
+  .site-header__divider {
+    width: 1px;
+    height: 1.25rem;
+    margin: 0 var(--spacing-2);
+    background: var(--color-border);
   }
 
   /* Icon shows the DESTINATION mode: moon in light (click → dark), sun in
@@ -213,8 +177,6 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
   .site-footer {
     padding: var(--spacing-6) var(--spacing-8);
     border-top: 1px solid var(--color-border);
-    color: var(--color-foreground-subtle);
-    font-size: var(--text-sm);
   }
 
   /* Shared page container. */
@@ -228,5 +190,10 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
     display: flex;
     flex-direction: column;
     gap: var(--spacing-16);
+  }
+
+  /* Prose links inside Text components (set:html copy). */
+  .page .st-text a {
+    color: inherit;
   }
 </style>

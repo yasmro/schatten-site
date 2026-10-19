@@ -1,9 +1,27 @@
 ---
-// Landing (#449 Phase 2). Shell, theme plumbing, and chrome live in Base.astro;
-// this file owns the landing's own content and styles.
+// Landing. Shell, theme plumbing, and chrome live in Base.astro; this file
+// owns the landing's own content and styles.
+//
+// Built from Schatten's React components (Text / Button / Badge / Card /
+// Callout), rendered to static HTML at build time — see CLAUDE.md. The one
+// place raw `.st-*` markup is written by hand is the "Vanilla HTML" pane of
+// the proof block, because showing that markup IS the point of the pane.
 //
 // i18n: rest-param route — `/` renders the default locale (en), `/ja/` the
 // Japanese variant. Copy lives in src/i18n/ui.ts; this template is shared.
+import {
+  Badge,
+  Button,
+  Callout,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Text,
+} from '@yasmro/schatten'
+import LinkButton from '../../components/LinkButton'
 import Base from '../../layouts/Base.astro'
 import { defaultLocale, type Locale, locales, ui } from '../../i18n/ui'
 import { libraryVersion } from '../../lib/library.mjs'
@@ -25,44 +43,40 @@ const t = ui[locale].landing
 ---
 
 <Base locale={locale} description={t.metaDescription}>
-  <main class="page">
+  <main class="page landing">
     <section class="hero">
       {/* 言語に依らないワードマーク。h1 は見出しのままで、これはブランド標識。 */}
-      <p class="hero__wordmark">Schatten</p>
-      <h1 class="hero__title">{t.heroTitle}</h1>
-      <p class="hero__lead" set:html={t.heroLead} />
+      <Text as="p" variant="heading" size="2xl" family="serif" className="hero__wordmark">Schatten</Text>
+      <Text as="h1" variant="heading" size="lg" family="serif" className="hero__title">{t.heroTitle}</Text>
+      <Text as="p" size="lg" color="muted" leading="relaxed" className="hero__lead" set:html={t.heroLead} />
 
       <div class="hero__actions">
-        {/* 暫定リンク: サイト内 getting-started ページ(#449 Phase 3)が
-            立つまで README へ飛ばす。Phase 3 で差し替えること。 */}
-        <a
-          href="https://github.com/yasmro/schatten#getting-started"
-          class="st-btn st-btn--primary st-btn--lg"
-        >
+        {/* 暫定リンク: サイト内 getting-started ページが立つまで README へ飛ばす。 */}
+        <LinkButton variant="primary" size="lg" href="https://github.com/yasmro/schatten#getting-started">
           {t.ctaGetStarted}
-        </a>
-        <a href={STORYBOOK_ORIGIN} class="st-btn st-btn--secondary st-btn--lg">
-          {t.ctaStorybook}
-        </a>
+        </LinkButton>
+        <LinkButton variant="secondary" size="lg" href={STORYBOOK_ORIGIN}>{t.ctaStorybook}</LinkButton>
       </div>
 
       <div class="hero__badges">
-        <span class="st-badge st-badge--neutral st-badge--solid st-badge--md">v{version}</span>
-        <span class="st-badge st-badge--success st-badge--subtle st-badge--md">API stable</span>
-        <span class="st-badge st-badge--info st-badge--outline st-badge--md">ESM only</span>
+        <Badge variant="neutral" appearance="solid">v{version}</Badge>
+        <Badge variant="success" appearance="subtle">API stable</Badge>
+        <Badge variant="info" appearance="outline">ESM only</Badge>
       </div>
     </section>
 
     <!-- Proof block: the two delivery layers, side by side, one render. -->
     <section class="proof">
-      <div class="st-card st-card--filled proof__card">
-        <div class="st-card__header">
-          <div class="st-card__title">{t.proofTitle}</div>
-          <div class="st-card__description">{t.proofDesc}</div>
-        </div>
-        <div class="st-card__content proof__content">
+      <Card>
+        <CardHeader>
+          <CardTitle>{t.proofTitle}</CardTitle>
+          <CardDescription>{t.proofDesc}</CardDescription>
+        </CardHeader>
+        <CardContent className="proof__content">
           <figure class="proof__pane">
-            <figcaption class="proof__caption">React</figcaption>
+            <figcaption>
+              <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">React</Text>
+            </figcaption>
             <pre
               class="proof__code"><code>&lt;Button variant="primary"
   size="md"&gt;
@@ -70,7 +84,9 @@ const t = ui[locale].landing
 &lt;/Button&gt;</code></pre>
           </figure>
           <figure class="proof__pane">
-            <figcaption class="proof__caption">Vanilla HTML</figcaption>
+            <figcaption>
+              <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">Vanilla HTML</Text>
+            </figcaption>
             <pre
               class="proof__code"><code>&lt;button class="st-btn
   st-btn--primary st-btn--md"&gt;
@@ -78,26 +94,29 @@ const t = ui[locale].landing
 &lt;/button&gt;</code></pre>
           </figure>
           <div class="proof__render">
-            <span class="proof__caption">{t.proofRenderLabel}</span>
-            <button type="button" class="st-btn st-btn--primary st-btn--md">
-              {t.proofRenderButton}
-            </button>
+            <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">
+              {t.proofRenderLabel}
+            </Text>
+            {/* The React half of the proof, rendered for real by the component. */}
+            <Button type="button" variant="primary" size="md">{t.proofRenderButton}</Button>
           </div>
-        </div>
-        <div class="st-card__footer proof__footer" set:html={t.proofFooter} />
-      </div>
+        </CardContent>
+        <CardFooter className="proof__footer">
+          <Text as="p" size="sm" color="muted" set:html={t.proofFooter} />
+        </CardFooter>
+      </Card>
     </section>
 
-
-    <section class="callout-demo">
-      <div class="st-callout st-callout--info st-callout--subtle" role="note">
-        <div class="st-callout__body" set:html={t.calloutNote} />
-      </div>
+    <section>
+      <Callout variant="info" appearance="subtle" role="note">
+        <Fragment slot="description" set:html={t.calloutNote} />
+      </Callout>
     </section>
   </main>
 </Base>
 
-<style>
+<style is:global>
+  /* Landing LAYOUT only — type / color come from the components. */
   .hero {
     display: flex;
     flex-direction: column;
@@ -107,18 +126,9 @@ const t = ui[locale].landing
   /* ブランドページの「陰影 + gloss」と同じ階層。マークが主、文言が従。 */
   .hero__wordmark {
     margin: 0 0 calc(var(--spacing-8) * -1 + var(--spacing-4));
-    font-family: var(--font-serif);
-    font-size: var(--text-4xl);
-    line-height: 1;
   }
 
   .hero__title {
-    margin: 0;
-    /* Headings ride the DS serif stack (EB Garamond / Noto Serif JP) — the
-     * same `--font-serif` the Text component's `st-text--serif` consumes. */
-    font-family: var(--font-serif);
-    font-size: var(--text-2xl);
-    line-height: var(--leading-snug, 1.375);
     text-wrap: balance;
     /* Progressive enhancement (Chromium 119+): phrase-based JP wrapping so
      * カタカナ語 don't break mid-word. Falls back to normal wrapping. */
@@ -126,11 +136,7 @@ const t = ui[locale].landing
   }
 
   .hero__lead {
-    margin: 0;
     max-width: 44rem;
-    color: var(--color-foreground-muted);
-    font-size: var(--text-lg);
-    line-height: 1.8;
   }
 
   .hero__actions {
@@ -139,7 +145,7 @@ const t = ui[locale].landing
     flex-wrap: wrap;
   }
 
-  .hero__actions .st-btn {
+  .hero__actions a {
     text-decoration: none;
   }
 
@@ -166,13 +172,11 @@ const t = ui[locale].landing
   }
 
   .proof__caption {
-    font-size: var(--text-xs);
-    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-foreground-subtle);
   }
 
+  /* No Schatten primitive for a code block yet — bespoke, on tokens only. */
   .proof__code {
     margin: 0;
     padding: var(--spacing-4);
@@ -194,18 +198,9 @@ const t = ui[locale].landing
     border-top: 1px dashed var(--color-border);
   }
 
-  .proof__footer {
-    /* .st-card__footer is a flex actions row by contract; this footer is
-     * prose, so restore block flow. */
-    display: block;
-    color: var(--color-foreground-muted);
-    font-size: var(--text-sm);
-  }
-
   @media (max-width: 40rem) {
     .proof__content {
       grid-template-columns: 1fr;
     }
   }
-
 </style>
