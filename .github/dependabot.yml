@@ -1,0 +1,17 @@
+# `@yasmro/schatten` bumps are how a library release reaches this site:
+# the PR runs CI (incl. the Storybook link gate) and merging deploys.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      astro:
+        patterns: ['astro', '@astrojs/*']
+      react:
+        patterns: ['react', 'react-dom', '@types/react', '@types/react-dom']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

@@ -1,0 +1,232 @@
+---
+// The site shell: document head, theme plumbing, header, footer.
+// Pages supply only their own content and their own <style>.
+//
+// The site is the dogfood — no React, no Tailwind, only `.st-*` classes and
+// semantic tokens from the published CSS surface, consumed through the exports
+// map, from npm. The only JavaScript is the theme
+// plumbing below, which dogfoods the non-React consumption path of
+// `@yasmro/schatten/theme-init`.
+import '@yasmro/schatten/schatten.css'
+import { THEME_INIT_SCRIPT } from '@yasmro/schatten/theme-init'
+import GoogleFonts from '../components/GoogleFonts.astro'
+import { type Locale, localePath, locales, ui } from '../i18n/ui'
+import { STORYBOOK_ORIGIN } from '../lib/storybook-links.mjs'
+
+interface Props {
+  /** Active locale — drives `<html lang>`, copy lookup, and the switcher. */
+  locale: Locale
+  /** `<meta name="description">` for this page. */
+  description: string
+  /** Page part of the document title; omitted on the landing. */
+  title?: string
+  /** Path of the current page within a locale, e.g. `''` (home) or `brand`. */
+  page?: string
+}
+
+const { locale, description, title, page = '' } = Astro.props
+const t = ui[locale]
+const otherLocale: Locale = locale === 'ja' ? 'en' : 'ja'
+
+/** Locale-aware href for a page within the site. */
+const hrefFor = (l: Locale) => `${localePath(l)}${page}${page ? '/' : ''}`
+
+// Theme scripts — both consume the library's PUBLIC runtime contract
+// (localStorage key `schatten-theme`, JSON shape `{ mode, special }`,
+// api-stability.md §Provider runtime contract). No React here, so:
+//
+// 1. THEME_INIT_SCRIPT — the published FOUC snippet, inlined verbatim from
+//    `@yasmro/schatten/theme-init`. It applies `.dark` before first paint.
+// 2. A `.light` supplement — the dist guards its OS-dark media block with
+//    `:root:not(.light)`, so an explicit light choice under a dark OS needs
+//    the `.light` class. The snippet doesn't set it (ThemeProvider handles
+//    this differently); a vanilla consumer adds it from the same stored mode.
+// 3. The toggle handler — resolves the *effective* mode (class or OS), flips
+//    it, and persists `mode` while preserving any stored `special`.
+const THEME_LIGHT_SUPPLEMENT = `(function(){try{var s=localStorage.getItem('schatten-theme');var t=s?JSON.parse(s):{};if(t.mode==='light')document.documentElement.classList.add('light')}catch(e){}})();`
+
+const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=document.documentElement;document.addEventListener('click',function(e){var b=e.target.closest('[data-theme-toggle]');if(!b)return;var dark=root.classList.contains('dark')||(!root.classList.contains('light')&&matchMedia('(prefers-color-scheme: dark)').matches);var next=dark?'light':'dark';root.classList.toggle('dark',next==='dark');root.classList.toggle('light',next==='light');var t={};try{t=JSON.parse(localStorage.getItem(KEY))||{}}catch(err){}t.mode=next;try{localStorage.setItem(KEY,JSON.stringify(t))}catch(err){}});})();`
+---
+
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} — Schatten` : 'Schatten — design system'}</title>
+    <meta name="description" content={description} />
+    {locales.map((l) => <link rel="alternate" hreflang={l} href={new URL(hrefFor(l), Astro.site)} />)}
+    <script is:inline set:html={THEME_INIT_SCRIPT + THEME_LIGHT_SUPPLEMENT} />
+    <GoogleFonts serif />
+  </head>
+  <body>
+    <header class="site-header">
+      <a href={localePath(locale)} class="site-header__brand">Schatten</a>
+      <nav class="site-header__nav">
+        <a href={`${localePath(locale)}components/`}>{t.common.navComponents}</a>
+        <a href={`${localePath(locale)}brand/`}>{t.common.navBrand}</a>
+        <a href="https://github.com/yasmro/schatten">GitHub</a>
+        <a href={STORYBOOK_ORIGIN}>Storybook</a>
+        <a href={hrefFor(otherLocale)} class="site-header__lang" lang={otherLocale}>
+          {t.common.langSwitchLabel}
+        </a>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label={t.common.themeToggleLabel}
+          title={t.common.themeToggleLabel}
+        >
+          <svg
+            class="theme-toggle__icon theme-toggle__icon--moon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg
+            class="theme-toggle__icon theme-toggle__icon--sun"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+              d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+            ></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <slot />
+
+    <footer class="site-footer">
+      <span>© yasmro — MIT License</span>
+    </footer>
+    <script is:inline set:html={THEME_TOGGLE_SCRIPT} />
+  </body>
+</html>
+
+<style is:global>
+  /* Shell layout only. Colors / spacing / type all come from Schatten's public
+   * tokens so the site re-themes with the token layer (dark mode included)
+   * without any page-side logic. */
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4) var(--spacing-8);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-header__brand {
+    font-weight: 700;
+    font-size: var(--text-lg);
+    letter-spacing: 0.06em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header__nav {
+    display: flex;
+    gap: var(--spacing-6);
+    align-items: center;
+  }
+
+  .site-header__nav a {
+    color: var(--color-foreground-muted);
+    text-decoration: none;
+    font-size: var(--text-sm);
+  }
+
+  .site-header__nav a:hover {
+    color: var(--color-foreground);
+  }
+
+  .site-header__lang {
+    border-left: 1px solid var(--color-border);
+    padding-left: var(--spacing-6);
+  }
+
+  /* ---- theme toggle ---- */
+  .theme-toggle {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-foreground-muted);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-foreground);
+  }
+
+  .theme-toggle__icon {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* Icon shows the DESTINATION mode: moon in light (click → dark), sun in
+   * dark. "Effective dark" has two sources — the `.dark` class, or OS dark
+   * with no explicit `.light` — so both need the swap. */
+  .theme-toggle__icon--sun {
+    display: none;
+  }
+
+  html.dark .theme-toggle__icon--moon {
+    display: none;
+  }
+
+  html.dark .theme-toggle__icon--sun {
+    display: block;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html:not(.light) .theme-toggle__icon--moon {
+      display: none;
+    }
+
+    html:not(.light) .theme-toggle__icon--sun {
+      display: block;
+    }
+  }
+
+  .site-footer {
+    padding: var(--spacing-6) var(--spacing-8);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-foreground-subtle);
+    font-size: var(--text-sm);
+  }
+
+  /* Shared page container. */
+  .page {
+    flex: 1;
+    width: 100%;
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--spacing-16) var(--spacing-8);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+</style>

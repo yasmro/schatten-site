@@ -1,0 +1,145 @@
+---
+// Components index. The CATALOG stays in Storybook (it is not duplicated
+// here) — this page is an index into it, plus one live React island proving
+// the second delivery layer on the site itself.
+//
+// The list is generated at build time from the installed `@yasmro/schatten`
+// package: every lv1 that ships a per-component CSS subpath. The site has no
+// view of the library source, so it can only list what is published.
+import Base from '../../layouts/Base.astro'
+import LiveDemo from '../../components/LiveDemo'
+import { defaultLocale, type Locale, locales, ui } from '../../i18n/ui'
+import { listComponents } from '../../lib/library.mjs'
+import { STORYBOOK_ORIGIN, storybookDocsUrl } from '../../lib/storybook-links.mjs'
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({
+    params: { locale: locale === defaultLocale ? undefined : locale },
+    props: { locale },
+  }))
+}
+
+const { locale } = Astro.props as { locale: Locale }
+const t = ui[locale].components
+
+const components = (await listComponents()).map(({ name }) => ({
+  name,
+  // Derivation + drift gate live in src/lib/storybook-links.mjs
+  // (scripts/check-storybook-links.mjs checks these against the deployed Storybook).
+  href: storybookDocsUrl(name),
+}))
+---
+
+<Base locale={locale} description={t.metaDescription} title={t.pageTitle} page="components">
+  <main class="page">
+    <section class="intro">
+      <h1 class="intro__title">{t.title}</h1>
+      <p class="intro__lead" set:html={t.lead.replace('%STORYBOOK%', STORYBOOK_ORIGIN)} />
+    </section>
+
+    <section class="live">
+      <div class="st-card st-card--filled">
+        <div class="st-card__header">
+          <div class="st-card__title">{t.liveTitle}</div>
+          <div class="st-card__description">{t.liveDesc}</div>
+        </div>
+        <div class="st-card__content">
+          <LiveDemo
+            client:visible
+            saveLabel={t.saveLabel}
+            savingDoneLabel={t.savingDoneLabel}
+            switchLabel={t.switchLabel}
+            errorToggleLabel={t.errorToggleLabel}
+            inputPlaceholder={t.inputPlaceholder}
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="list">
+      <h2 class="list__title">{t.listTitle} <span class="list__count">{components.length}</span></h2>
+      <p class="list__lead" set:html={t.listLead} />
+      <ul class="list__grid">
+        {
+          components.map((c) => (
+            <li>
+              <a class="list__item" href={c.href}>{c.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .intro__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-4xl);
+    line-height: 1.1;
+  }
+
+  .intro__lead {
+    margin: 0;
+    max-width: 44rem;
+    color: var(--color-foreground-muted);
+    font-size: var(--text-lg);
+    line-height: 1.8;
+  }
+
+  .intro__lead :global(a) {
+    color: inherit;
+  }
+
+  .list__title {
+    margin: 0 0 var(--spacing-3);
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+  }
+
+  .list__count {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-foreground-subtle);
+    vertical-align: middle;
+  }
+
+  .list__lead {
+    margin: 0 0 var(--spacing-6);
+    max-width: 44rem;
+    color: var(--color-foreground-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+
+  .list__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: var(--spacing-2);
+  }
+
+  .list__item {
+    display: block;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-size: var(--text-sm);
+  }
+
+  .list__item:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-strong);
+  }
+</style>
