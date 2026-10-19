@@ -33,7 +33,7 @@ jobs:
       # Same gates as CI — a deploy must not publish what a PR would have failed on.
       - run: pnpm check
       - run: pnpm check:links
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         id: pages
       - name: Build site
         env:
