@@ -40,7 +40,7 @@ jobs:
           # e.g. /schatten-site/ — derived from the repository name by configure-pages.
           SITE_BASE: ${{ steps.pages.outputs.base_path }}/
         run: pnpm build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
