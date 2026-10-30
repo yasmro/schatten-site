@@ -149,7 +149,7 @@ export const ui: Record<Locale, Strings> = {
       colorLabel: 'Color',
       colorTitle: 'Four colors, named in Japanese',
       colorLead:
-        'Schatten’s primitives carry Japanese names. The values below are the real v1.0.0 tokens (<code>src/core/tokens/primitives.css</code>).',
+        'Schatten’s primitives carry Japanese names. The values below are the real v1.0.0 tokens (<a href="https://github.com/yasmro/schatten/blob/main/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a> in <code>yasmro/schatten</code>).',
       colorSwatches: [
         {
           name: 'Vermillion',
@@ -278,7 +278,7 @@ export const ui: Record<Locale, Strings> = {
       colorLabel: '色',
       colorTitle: '四つの色は、和の語彙でできている',
       colorLead:
-        'Schatten の primitive は色名からして和語である。数値は v1.0.0 の実トークン(<code>src/core/tokens/primitives.css</code>)。',
+        'Schatten の primitive は色名からして和語である。数値は v1.0.0 の実トークン(<code>yasmro/schatten</code> の <a href="https://github.com/yasmro/schatten/blob/main/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a>)。',
       colorSwatches: [
         {
           name: '朱',
