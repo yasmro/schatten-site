@@ -19,6 +19,13 @@ is the installed package version.
 A new library release reaches the site as a Dependabot bump PR. CI runs the gates below; merging
 to `main` deploys.
 
+## PR previews
+
+Each PR is built and published to `https://yasmro.github.io/schatten-site/pr-preview/<number>/`;
+a comment on the PR links to it, and closing the PR removes it. Previews sit next to the site on
+the `gh-pages` branch, which is what Pages serves. PRs from forks and Dependabot get no preview:
+their workflow token cannot write to the branch.
+
 ## Authoring rule
 
 The site is built from Schatten's own React components, rendered to static HTML by Astro at
@@ -43,4 +50,4 @@ pnpm dev
 ```
 
 `SITE_BASE` is the subpath the site is served under (unset locally = `/`; the Pages deploy sets
-`/schatten-site/`).
+`/schatten-site/`, a PR preview `/schatten-site/pr-preview/<number>/`).

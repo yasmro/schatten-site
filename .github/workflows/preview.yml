@@ -1,0 +1,75 @@
+name: PR preview
+
+# Publishes each PR to /pr-preview/<number>/ on the gh-pages branch and removes
+# it when the PR closes. Forks and Dependabot are skipped: their token is
+# read-only, so the push would fail.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.number }}
+
+env:
+  PREVIEW_DIR: pr-preview/${{ github.event.number }}
+
+jobs:
+  publish:
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build site
+        env:
+          SITE_BASE: /${{ github.event.repository.name }}/${{ env.PREVIEW_DIR }}/
+        run: pnpm build
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          target-folder: ${{ env.PREVIEW_DIR }}
+          commit-message: Publish preview for PR ${{ github.event.number }}
+          force: false
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-preview
+          message: |
+            Preview: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.PREVIEW_DIR }}/
+
+            Built from ${{ github.event.pull_request.head.sha }}. Pages can take a minute to update.
+
+  remove:
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: mkdir "$RUNNER_TEMP/empty"
+      # Deploying an empty folder clears the target.
+      - uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ${{ runner.temp }}/empty
+          branch: gh-pages
+          target-folder: ${{ env.PREVIEW_DIR }}
+          commit-message: Remove preview for PR ${{ github.event.number }}
+          force: false
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-preview
+          message: Preview removed.
