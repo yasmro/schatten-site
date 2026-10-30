@@ -1,0 +1,43 @@
+name: PR preview
+
+# Publishes each PR to /pr-preview/pr-<number>/ on the gh-pages branch and
+# removes it when the PR closes. Forks and Dependabot are skipped: their token
+# is read-only, so the push would fail.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.number }}
+
+jobs:
+  preview:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        if: github.event.action != 'closed'
+      - uses: actions/setup-node@v4
+        if: github.event.action != 'closed'
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+        if: github.event.action != 'closed'
+      - name: Build site
+        if: github.event.action != 'closed'
+        env:
+          SITE_BASE: /${{ github.event.repository.name }}/pr-preview/pr-${{ github.event.number }}/
+        run: pnpm build
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: dist
+          qr-code: 'false'

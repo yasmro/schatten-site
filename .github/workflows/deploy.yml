@@ -4,6 +4,9 @@ name: Deploy to GitHub Pages
 # package.json), never the library's develop branch — there is no workspace
 # link to the source. A new library release reaches the site as a dependency
 # bump PR (Dependabot), which runs CI; merging it to main deploys.
+#
+# Pages serves the gh-pages branch, shared with PR previews (preview.yml). The
+# site owns the root; `pr-preview/` belongs to the previews and is left alone.
 
 on:
   push:
@@ -11,16 +14,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -33,23 +34,15 @@ jobs:
       # Same gates as CI — a deploy must not publish what a PR would have failed on.
       - run: pnpm check
       - run: pnpm check:links
-      - uses: actions/configure-pages@v5
-        id: pages
       - name: Build site
         env:
-          # e.g. /schatten-site/ — derived from the repository name by configure-pages.
-          SITE_BASE: ${{ steps.pages.outputs.base_path }}/
+          SITE_BASE: /${{ github.event.repository.name }}/
         run: pnpm build
-      - uses: actions/upload-pages-artifact@v3
+      # Without this, Pages runs Jekyll, which drops Astro's `_astro/` directory.
+      - run: touch dist/.nojekyll
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
+          folder: dist
+          branch: gh-pages
+          clean-exclude: pr-preview
+          force: false
