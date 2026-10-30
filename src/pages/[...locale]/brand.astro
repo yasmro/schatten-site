@@ -1,10 +1,12 @@
 ---
 // Brand concept page (#449 Phase 3). SSOT for the prose is
-// docs/brand-concept.md — this page renders it; it does not own the concept.
+// https://github.com/yasmro/schatten/blob/main/docs/brand-concept.md
+// — this page renders it; it does not own the concept.
 //
 // Values (ramps, seasons, type scale) are hand-copied from the tokens for the
 // skeleton. Phase 3 should generate them from `dist/schatten.css` so the page
-// cannot drift from the shipped values — see §6 of docs/brand-concept.md.
+// cannot drift from the shipped values — see §6:
+// https://github.com/yasmro/schatten/blob/main/docs/brand-concept.md#6-サイトへの反映phase-3
 //
 // Note: §4 of that document (the open question about the calligraphy
 // provenance) is deliberately NOT rendered here — it stays internal until
@@ -29,7 +31,7 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: Locale }
 const t = ui[locale].brand
 
-// ── Values, all from src/core/tokens/primitives.css (v1.0.0) ──
+// ── Values, all from yasmro/schatten's src/core/tokens/primitives.css (v1.0.0) ──
 
 /** 朱 / 墨 / 和紙 / 藍 — the display chip for each of the four. */
 const fourChips = [
