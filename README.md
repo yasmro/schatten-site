@@ -21,7 +21,7 @@ to `main` deploys.
 
 ## PR previews
 
-Each PR is built and published to `https://yasmro.github.io/schatten-site/pr-preview/pr-<number>/`;
+Each PR is built and published to `https://yasmro.github.io/schatten-site/pr-preview/<number>/`;
 a comment on the PR links to it, and closing the PR removes it. Previews sit next to the site on
 the `gh-pages` branch, which is what Pages serves. PRs from forks and Dependabot get no preview:
 their workflow token cannot write to the branch.
@@ -50,4 +50,4 @@ pnpm dev
 ```
 
 `SITE_BASE` is the subpath the site is served under (unset locally = `/`; the Pages deploy sets
-`/schatten-site/`, a PR preview `/schatten-site/pr-preview/pr-<number>/`).
+`/schatten-site/`, a PR preview `/schatten-site/pr-preview/<number>/`).
