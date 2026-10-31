@@ -46,7 +46,7 @@ export const foundationPages = [
     ),
     lead: l(
       'The scale is built on a 4px base. Use it instead of arbitrary pixel values, so every layout lands on the same rhythm.',
-      '余白の尺度は 4px を基準にしている。任意の px 値の代わりにこの尺度を使えば、どのレイアウトも同じリズムに揃う。',
+      '余白の尺度は 4px を基準にしている。任意の px 値の代わりにこの尺度を使えば、どのレイアウトでも余白が揃う。',
     ),
   },
   {
@@ -70,7 +70,7 @@ export const foundationPages = [
     ),
     lead: l(
       'Pick a shadow by what the surface is, not by how deep it should look. Every shadow is a translucent black, and the same value is used in light and dark mode.',
-      '影は深さの好みではなく、面の種類で選ぶ。影はすべて半透明の黒で、ライトでもダークでも同じ値を使う。',
+      '影は見た目の深さではなく、面の種類で選ぶ。影はすべて半透明の黒で、ライトでもダークでも同じ値を使う。',
     ),
   },
   {
@@ -78,7 +78,7 @@ export const foundationPages = [
     title: l('Motion', 'モーション'),
     summary: l(
       'The duration scale, the names by intent, and when not to animate.',
-      '時間の尺度、用途別の名前、動かさない判断。',
+      '時間の尺度、用途別の名前、動きを入れない場面。',
     ),
     lead: l(
       'Enter and exit timing comes from a three-step duration scale. Pick a duration by what the motion is for, not by a millisecond count.',
@@ -104,12 +104,12 @@ export type FoundationSlug = (typeof foundationPages)[number]['slug']
 export const foundationsIndex = {
   metaDescription: l(
     'Schatten foundations — color, typography, spacing, radius, elevation, motion and z-index.',
-    'Schatten のファンデーション — 色、タイポグラフィ、余白、角丸、エレベーション、モーション、重なり順。',
+    'Schatten のファンデーション: 色、タイポグラフィ、余白、角丸、エレベーション、モーション、重なり順。',
   ),
   title: l('Foundations', 'ファンデーション'),
   lead: l(
     'The public design tokens every component is built on, and how to use them. Tokens are generated at build time from the published package.',
-    'すべてのコンポーネントの土台になる公開デザイントークンと、その使い方。トークンの一覧は、ビルド時に npm パッケージから生成している。',
+    'すべてのコンポーネントが使う公開デザイントークンと、その使い方。トークンの一覧は、ビルド時に npm パッケージから生成している。',
   ),
   back: l('All foundations', 'ファンデーション一覧'),
 }
@@ -136,7 +136,7 @@ const stateTokens = (name: string, label: Localized): ColorToken[] => [
     name: `${name}-emphasis`,
     role: l(
       'Readable colored text on subtle or light surfaces',
-      'subtle や明るい面の上で読める色文字',
+      'subtle や明るい面の上で読める、色の付いた文字',
     ),
   },
 ]
@@ -160,7 +160,7 @@ export const colorGroups: readonly ColorGroup[] = [
         name: 'foreground-subtle',
         role: l(
           'Tertiary text, for large or incidental text only (AA large text, 3:1)',
-          '三次的な文字。大きな文字や付随的な文字に限る(AA 大文字の 3:1)',
+          '三番目に目立つ文字。大きな文字や付随的な文字に限る(AA の大きな文字の基準 3:1)',
         ),
       },
     ],
@@ -182,7 +182,7 @@ export const colorGroups: readonly ColorGroup[] = [
       },
       {
         name: 'inverted-foreground-subtle',
-        role: l('Tertiary text on a saturated surface', '彩度の高い面の上の三次的な文字'),
+        role: l('Tertiary text on a saturated surface', '彩度の高い面の上で三番目に目立つ文字'),
       },
     ],
   },
@@ -233,7 +233,7 @@ export const colorGroups: readonly ColorGroup[] = [
   {
     title: l('Border & ring', 'ボーダーとリング'),
     tokens: [
-      { name: 'border', role: l('Default border for dividers', '区切りの標準のボーダー') },
+      { name: 'border', role: l('Default border for dividers', '区切り線に使う標準のボーダー') },
       {
         name: 'border-strong',
         role: l(
@@ -330,7 +330,7 @@ export const inkAndPaperInverted: readonly ColorToken[] = [
   { name: 'ink-subtle-inverted', role: l('Faintest ink on dark paper', '暗い紙の上で最も薄い墨') },
   { name: 'paper-white-inverted', role: l('Dark paper for surfaces', '面に使う暗い紙') },
   { name: 'paper-warm-inverted', role: l('Dark paper for the page', 'ページに使う暗い紙') },
-  { name: 'paper-cream-inverted', role: l('Lightest dark paper', '最も明るい暗い紙') },
+  { name: 'paper-cream-inverted', role: l('Lightest dark paper', '暗い紙の中で最も明るい色') },
 ]
 
 /** Primitive scales in display order. Their steps come from the package. */
@@ -356,7 +356,7 @@ export const colorScales: readonly { name: string; title: Localized; note?: Loca
     title: l('Alabaster (和紙)', 'Alabaster(和紙)'),
     note: l(
       'Paper-tinted neutral. Mirrors sumi in lightness and chroma, with a warm hue. It is the default Theme scale.',
-      '紙の無彩色。明度と彩度は sumi と同じで、色相だけが暖色に振れている。Theme の標準の階調でもある。',
+      '紙の無彩色。明度と彩度は sumi と同じで、色相だけが暖色である。Theme の標準の階調でもある。',
     ),
   },
   {
@@ -414,7 +414,7 @@ export const colorPage = {
   stateTitle: l('How state tokens work', '状態トークンの仕組み'),
   stateLead: l(
     'Each state has five tokens: <code>base</code> for fills, borders and icons, <code>hover</code>, <code>foreground</code> for text on the base, <code>subtle</code> for a faint background, and <code>emphasis</code> for colored text. Use <code>emphasis</code> for text: <code>base</code> as text falls just under AA for small text.',
-    '各状態には 5 つのトークンがある。<code>base</code> は塗り・ボーダー・アイコン、<code>hover</code> はホバー、<code>foreground</code> は base の上の文字、<code>subtle</code> は淡い背景、<code>emphasis</code> は色文字に使う。色文字には <code>emphasis</code> を使う。<code>base</code> を文字にすると、小さな文字の AA にわずかに届かない。',
+    '各状態には 5 つのトークンがある。<code>base</code> は塗り・ボーダー・アイコン、<code>hover</code> はホバー、<code>foreground</code> は base の上の文字、<code>subtle</code> は淡い背景、<code>emphasis</code> は色の付いた文字に使う。<code>base</code> を文字に使うと、小さな文字の AA 基準にわずかに届かない。',
   ),
   treatmentsTitle: l('Combinations', '組み合わせ'),
   treatmentsLead: l(
@@ -445,7 +445,7 @@ export const colorPage = {
   inkInvertedTitle: l('Ink & paper for dark mode', 'ダークモードの墨と紙'),
   inkInvertedLead: l(
     'The dark-mode counterparts. Semantic colors switch to these in dark mode.',
-    'ダークモード用の対応する色。セマンティックカラーはダークモードでこれらに切り替わる。',
+    'ライト用の墨と紙に対応する、ダークモード用の色。セマンティックカラーはダークモードでこれらに切り替わる。',
   ),
   scalesTitle: l('Color scales', '色の階調'),
   themeTitle: l('Theme ramp', 'Theme 階調'),
@@ -530,7 +530,7 @@ export const typeFaces: readonly { token: string; name: string; note: Localized 
     name: 'EB Garamond / Noto Serif JP',
     note: l(
       'Editorial serif, used through <code>&lt;Text family="serif"&gt;</code>. Load weights 400 to 700 yourself: a missing weight renders as synthetic bold.',
-      '編集向けのセリフ体。<code>&lt;Text family="serif"&gt;</code> で使う。ウェイト 400〜700 を利用側で読み込む。足りないウェイトは合成の太字になる。',
+      '長文や見出し向けのセリフ体。<code>&lt;Text family="serif"&gt;</code> で使う。ウェイト 400〜700 を利用側で読み込む。足りないウェイトは合成の太字になる。',
     ),
   },
   {
@@ -553,11 +553,11 @@ export const typographyPage = {
   primitivesTitle: l('Primitives', 'Primitive'),
   primitivesLead: l(
     'The values behind the roles. Do not apply them to your own elements: go through <code>Text</code>.',
-    'ロールの元になる値。自前の要素に当てず、<code>Text</code> を通して使う。',
+    'ロールの元になる値。自前の要素に直接指定せず、<code>Text</code> を通して使う。',
   ),
   sizesTitle: l('Font sizes', 'フォントサイズ'),
   leadingTitle: l('Line heights', '行送り'),
-  sample: l('Shadow 陰影', '陰影 Schatten'),
+  sample: l('Typography 文字組み', '文字組み Typography'),
 }
 
 // ---- Spacing --------------------------------------------------------------
@@ -593,7 +593,7 @@ export const spacingPage = {
   layoutTitle: l('No layout components', 'レイアウト用コンポーネントはない'),
   layoutLead: l(
     'Schatten deliberately ships no <code>Stack</code> or <code>HStack</code>. Compose spacing directly with <code>flex</code> and <code>gap</code> on these tokens, so layout reads inline at the call site.',
-    'Schatten は意図的に <code>Stack</code> や <code>HStack</code> を提供していない。これらのトークンを使い、<code>flex</code> と <code>gap</code> で直接組む。レイアウトが呼び出し側のコードでそのまま読める。',
+    'Schatten は意図的に <code>Stack</code> や <code>HStack</code> を提供していない。余白のトークンを使い、<code>flex</code> と <code>gap</code> で直接組む。レイアウトが呼び出し側のコードでそのまま読める。',
   ),
 }
 
@@ -640,7 +640,7 @@ export const radiusPage = {
       applied: false,
       use: l(
         'Larger floating surfaces. Dialog and Select content are square today',
-        '大きな浮遊面。現在の Dialog と Select の中身は角が四角い',
+        '浮いて表示される大きな面。現在の Dialog と Select の中身は角が四角い',
       ),
     },
   ] satisfies SemanticStep[],
@@ -661,7 +661,10 @@ export const elevationPage = {
     {
       name: '--shadow-card',
       applied: true,
-      use: l('Resting content cards. The lowest elevation', '静止したコンテンツのカード。最も低い'),
+      use: l(
+        'Resting content cards. The lowest elevation',
+        'ページに置かれたコンテンツのカード。エレベーションは最も低い',
+      ),
     },
     {
       name: '--shadow-popover',
@@ -684,7 +687,7 @@ export const elevationPage = {
       applied: true,
       use: l(
         'Focus-trapping surfaces: Dialog. The highest elevation today',
-        'フォーカスを閉じ込める面: Dialog。現在最も高い',
+        'フォーカスを閉じ込める面: Dialog。エレベーションは現在最も高い',
       ),
     },
   ] satisfies SemanticStep[],
@@ -787,14 +790,14 @@ export const zIndexPage = {
   paintTitle: l('Paint order', '描画順'),
   paintLead: l(
     'The later token paints on top, regardless of DOM order. Here the DOM runs from front to back, and the tokens still win.',
-    'DOM の順序に関係なく、後のトークンが手前に描かれる。この例の DOM は手前から奥の順に並んでいるが、それでもトークンの順序になる。',
+    'DOM の順序に関係なく、後のトークンが手前に描かれる。この例の DOM は手前から奥の順に並んでいるが、それでも描画はトークンの順になる。',
   ),
   paintTokens: ['--z-toast', '--z-tooltip', '--z-popover', '--z-modal', '--z-modal-backdrop'],
   ruleTitle: l('Your own stacking values', 'アプリケーション側の重なり順'),
   rules: [
     l(
       'Keep your own z-index values outside the <code>0–100</code> band, so they cannot collide with Schatten’s overlays.',
-      '自前の z-index は <code>0–100</code> の外に置く。Schatten のオーバーレイと衝突しないようにするため。',
+      'Schatten のオーバーレイと衝突しないよう、自前の z-index は <code>0–100</code> の外に置く。',
     ),
   ],
 }
