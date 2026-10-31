@@ -264,14 +264,14 @@ export const ui: Record<Locale, Strings> = {
         'That duality is not confined to names and colors; it is implemented in the typesetting. Both the sans and the serif role <strong>pair a Latin face with a Japanese face</strong> into a single stack. Being bilingual is the default state.',
       faceSansRole: 'sans — UI and body',
       faceSerifRole: 'serif — headings and long form',
-      faceSampleLatin: 'Shadow &amp; Gradation',
-      faceSampleJa: '陰影と階調',
+      faceSampleLatin: 'Paper &amp; Ink',
+      faceSampleJa: '紙と墨',
       faceNote:
         'This page cannot load webfonts under the artifact CSP, so a system mincho and gothic stand in. The faces above are what the real site serves.',
       scaleTitle: 'Eight sizes, six leadings',
       scaleLead:
         'Sizes come from <code>--text-*</code>, leading from <code>--leading-*</code> — public tokens, all in <code>rem</code>.',
-      scaleSample: 'Shadow 陰影',
+      scaleSample: 'Typography 文字組み',
       roleNote:
         'Note that <strong>body / label / heading are not CSS variables</strong>. Size, leading, and weight are three properties, and a single <code>var()</code> cannot carry three — so the roles bind to the <code>.st-text--*</code> class rules instead.',
     },
@@ -356,7 +356,7 @@ export const ui: Record<Locale, Strings> = {
     landing: {
       metaDescription:
         'Schatten design system — React コンポーネントと、フレームワークに依存しない CSS クラス API を、共通のトークン基盤の上に。',
-      heroTitle: '陰影のあるインターフェースを、ふたつの配信層で。',
+      heroTitle: '階調のあるインターフェースを、ふたつの配信層で。',
       heroLead:
         'React のコンポーネントと、素の HTML で使える CSS クラス。Schatten はこの両方を、共通のデザイントークンの上で提供しています。<br>このページ自体も React コンポーネントで組み、ビルド時に静的 HTML へ書き出しています。ブラウザに届くのは、その HTML と配布している CSS 1 枚です。',
       ctaGetStarted: 'Get started',
@@ -435,14 +435,14 @@ export const ui: Record<Locale, Strings> = {
         'この二重性は、名前や色名だけにとどまらない。組版そのものに実装されている。sans も serif も、<strong>欧文フェイスと和文フェイスを明示的に対にして</strong>ひとつのスタックを組む。バイリンガルであることが、既定の状態。',
       faceSansRole: 'sans — UI・本文',
       faceSerifRole: 'serif — 見出し・長文',
-      faceSampleLatin: 'Shadow &amp; Gradation',
-      faceSampleJa: '陰影と階調',
+      faceSampleLatin: 'Paper &amp; Ink',
+      faceSampleJa: '紙と墨',
       faceNote:
         'このページは CSP により Web フォントを読み込めないため、システムの明朝／ゴシックで代替表示している。実サイトでは上記のフェイスが載る。',
       scaleTitle: '尺度は 8 段、行送りは 6 段',
       scaleLead:
         'サイズは <code>--text-*</code>、行送りは <code>--leading-*</code>。いずれも <code>rem</code> 基準の公開トークン。',
-      scaleSample: '陰影 Schatten',
+      scaleSample: '文字組み Typography',
       roleNote:
         'なお <strong>body / label / heading というロールは CSS 変数ではない</strong>。サイズ・行送り・ウェイトの 3 つを 1 つの <code>var()</code> では表せないため、<code>.st-text--*</code> のクラス規則に束ねられている。',
     },

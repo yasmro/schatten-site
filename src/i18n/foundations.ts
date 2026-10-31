@@ -557,7 +557,7 @@ export const typographyPage = {
   ),
   sizesTitle: l('Font sizes', 'フォントサイズ'),
   leadingTitle: l('Line heights', '行送り'),
-  sample: l('Shadow 陰影', '陰影 Schatten'),
+  sample: l('Typography 文字組み', '文字組み Typography'),
 }
 
 // ---- Spacing --------------------------------------------------------------
