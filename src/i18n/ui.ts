@@ -369,19 +369,17 @@ export const ui: Record<Locale, Strings> = {
     },
     brand: {
       pageTitle: 'ブランドコンセプト',
-      metaDescription:
-        'Schatten のブランドコンセプト: 紙と墨のあいだに生まれる階調としての影。朱・墨・和紙・藍と八節。',
-      thesis:
-        'Schatten の影は、光の不在ではなく、<br>紙と墨のあいだに生まれる<em>階調</em>である。',
+      metaDescription: 'Schatten のブランドコンセプト。紙と墨の階調、朱・墨・和紙・藍、八節。',
+      thesis: '影は、光の不在ではなく、<br>紙と墨のあいだの<em>階調</em>である。',
       origin:
-        'Schatten はドイツ語で「影」を意味する。ポートフォリオサイトのブランドコンセプト『陰翳礼讃』(谷崎潤一郎)を、ページ単位ではなくボタンや文字などのコンポーネント単位のデザイントークンとして実装した。',
+        'Schatten はドイツ語で「影」。ポートフォリオサイトのコンセプト『陰翳礼讃』(谷崎潤一郎)を、コンポーネント単位のデザイントークンとして実装した。',
       gradationPaper: '紙 · 和紙',
       gradationInk: '墨 · 影',
 
       colorLabel: '色',
-      colorTitle: '和の名前を持つ四つの色',
+      colorTitle: '和の名前を持つ四色',
       colorLead:
-        'Schatten の primitive の色名は、和の語彙に由来する。数値は v1.0.0 の実トークンである(<code>yasmro/schatten</code> の <a href="https://github.com/yasmro/schatten/blob/v1.0.0/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a>)。',
+        '色名は和の語彙に由来する。数値は v1.0.0 のトークン(<code>yasmro/schatten</code> の <a href="https://github.com/yasmro/schatten/blob/v1.0.0/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a>)。',
       colorSwatches: [
         {
           name: '朱',
@@ -391,47 +389,46 @@ export const ui: Record<Locale, Strings> = {
         {
           name: '墨',
           token: 'sumi',
-          role: '前景と文字に使う。寒色寄りの無彩色。',
+          role: '文字と前景。寒色寄りの無彩色。',
         },
         {
           name: '和紙',
           token: 'alabaster',
-          role: '面と背景に使う。暖色寄りの無彩色。',
+          role: '面と背景。暖色寄りの無彩色。',
         },
         {
           name: '藍',
           token: 'indigo',
-          role: '第二のブランドカラー。墨に近い色相で、彩度が高い。',
+          role: '第二のブランドカラー。墨に近い色相で彩度が高い。',
         },
       ],
-      warmCoolTitle: '墨は寒色、紙は暖色で、彩度は同じ',
+      warmCoolTitle: '墨は寒色、紙は暖色',
       warmCoolLead:
-        '<code>sumi</code> と <code>alabaster</code> は明度も彩度も同じで、<strong>色相だけが 250 と 70 で正反対</strong>である。どちらもほぼ無彩色に見えるが、墨は青みに、紙は黄みに寄っている。',
+        '<code>sumi</code> と <code>alabaster</code> は明度も彩度も同じで、<strong>色相だけが 250 と 70 で正反対</strong>。墨は青みに、紙は黄みに寄る。',
       warmLabel: '暖 · warm',
       coolLabel: '寒 · cool',
       achromaticLabel: '無彩 C≈0.01',
       chromaticLabel: '有彩',
-      mirrorTitle: '全 11 段で明度と彩度が一致する',
+      mirrorTitle: '全 11 段で明度と彩度が同じ',
       mirrorLead:
-        '<code>-500</code> に限らず、<strong>全 11 段で明度と彩度が一致し、違うのは色相だけ</strong>だ。墨と和紙は、同じ階調を持つ一対である。',
-      chromaticRampTitle: '有彩の二色も、同じ 11 段の階調を持つ',
+        '<code>-500</code> だけではない。違うのは<strong>色相だけ</strong>で、墨と和紙は同じ階調を持つ。',
+      chromaticRampTitle: '有彩の二色も 11 段',
       oklchNote:
-        'すべて OKLCH で定義している。知覚的に均等な色空間なので、数値の明度が同じなら、<strong>見た目の明るさも揃う</strong>。',
+        'すべて OKLCH で定義している。数値の明度が同じなら、<strong>見た目の明るさも揃う</strong>。',
 
       seasonsLabel: '季節',
       seasonsTitle: '八つの季節は明度が同じ',
       seasonsLead:
-        '季節(Special テーマ)は <code>--color-theme-*</code> のランプだけを替える。500 段はすべて L 64%、700 段はすべて L 46% に固定されていて、変わるのは色相と彩度だけだ。区切りの日付は、古典的な<strong>八節</strong>(四立と二至二分)と一致する。',
+        '季節テーマは <code>--color-theme-*</code> だけを替える。500 段は L 64%、700 段は L 46% で固定で、変わるのは色相と彩度だけ。区切りの日付は<strong>八節</strong>(四立と二至二分)と同じ。',
       seasonNames: ['立春', '春分', '立夏', '夏至', '立秋', '秋分', '立冬', '冬至'],
-      seasonsNote:
-        '季節テーマは色だけを替え、明度の段階は変えないので、どの季節でも読みやすさは変わらない。',
+      seasonsNote: '明度を変えないので、どの季節でも読みやすさは同じ。',
 
       typeLabel: '書体',
       typeTitle: '構造は西洋の工学、表層は和の美学',
       typeLead1:
-        '<strong>構造</strong>には西洋の工学語彙(shadcn / Radix / OKLCH / BEM / CVA)を、<strong>表層</strong>には和の美学語彙(朱・墨・和紙・藍・八節)を使っている。どちらも他方の装飾ではない。',
+        '<strong>構造</strong>は西洋の工学語彙(shadcn / Radix / OKLCH / BEM / CVA)、<strong>表層</strong>は和の美学語彙(朱・墨・和紙・藍・八節)。どちらも他方の装飾ではない。',
       typeLead2:
-        'この組み合わせは、名前や色名だけでなく組版にも実装している。sans も serif も、<strong>欧文フェイスと和文フェイスを明示的に対にして</strong>ひとつのスタックを組む。欧文と和文の両方を扱えることが、既定の状態である。',
+        'sans も serif も、<strong>欧文と和文のフェイスを対にして</strong>ひとつのスタックにしている。',
       faceSansRole: 'sans — UI・本文',
       faceSerifRole: 'serif — 見出し・長文',
       faceSampleLatin: 'Paper &amp; Ink',
@@ -441,7 +438,7 @@ export const ui: Record<Locale, Strings> = {
         'サイズは <code>--text-*</code>、行送りは <code>--leading-*</code>。いずれも <code>rem</code> 基準の公開トークン。',
       scaleSample: '文字組み Typography',
       roleNote:
-        'なお <strong>body / label / heading というロールは CSS 変数ではない</strong>。サイズ・行送り・ウェイトの 3 つを 1 つの <code>var()</code> では表せないため、<code>.st-text--*</code> のクラス規則にまとめている。',
+        '<strong>body / label / heading は CSS 変数ではない</strong>。サイズ・行送り・ウェイトの 3 つを 1 つの <code>var()</code> で表せないので、<code>.st-text--*</code> のクラスにまとめている。',
     },
     components: {
       pageTitle: 'コンポーネント',
