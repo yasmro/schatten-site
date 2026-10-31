@@ -1,0 +1,18 @@
+---
+// Bulleted rules of a foundations page. Rules may carry inline <code>.
+import { Text } from '@yasmro/schatten'
+
+interface Props {
+  rules: readonly string[]
+}
+---
+
+<ul class="fnd__rules">
+  {
+    Astro.props.rules.map((rule) => (
+      <li>
+        <Text as="span" leading="relaxed" set:html={rule} />
+      </li>
+    ))
+  }
+</ul>

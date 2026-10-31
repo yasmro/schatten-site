@@ -13,7 +13,7 @@ In order of preference:
    `Card*` / `Callout` / `Separator` / `Icon` / … imported from `@yasmro/schatten` and
    used directly in `.astro` templates. Astro renders them to HTML at build time; add
    a `client:` directive **only** where the component must be interactive in the
-   browser (today: `LiveDemo`). Typography goes through `<Text as=… variant=… size=…>`
+   browser (today: `LiveDemo`, `ComponentDemo`, `MotionDemo`). Typography goes through `<Text as=… variant=… size=…>`
    rather than a styled `<h2>` / `<p>`.
 2. **Raw `.st-*` markup only where the markup itself is the subject** — the
    "Vanilla HTML" pane of the landing's proof block. Nowhere else.
@@ -36,6 +36,21 @@ Two mechanics that follow from "React components inside Astro":
   written in the template; the elements a React component renders carry no scope
   attribute. Keep selectors page-prefixed (`.hero__…`, `.brand__…`).
 
+## Page structure
+
+| Route | Content | Source |
+|---|---|---|
+| `/foundations/` | index of the foundation pages | `src/i18n/foundations.ts` |
+| `/foundations/[slug]/` | color, typography, spacing, radius, elevation, motion, z-index | `foundations.ts` + the package (`src/lib/library.mjs`); content in `src/components/foundations/` |
+| `/components/` | index by category | installed package + `src/i18n/guides.ts` |
+| `/components/[slug]/` | side menu, demo, usage, guide, Storybook icon link | `guides.ts`, `ComponentDemo.tsx`, `GuideExample.tsx` |
+| `/brand/` | brand concept | `src/i18n/ui.ts` |
+
+Storybook is for verifying and testing behaviour, so the site links to it but does not
+send readers there for usage. A component the package ships without an entry in `guides.ts`
+and `ComponentDemo.tsx` fails the build, and so does a semantic colour or colour scale missing
+from `foundations.ts`; a library bump that adds one needs the entry.
+
 ## Gates
 
 ```sh
@@ -51,5 +66,7 @@ pnpm build
 - Library conventions (component API, CSS API, tokens): `.claude/rules/` in
   [yasmro/schatten](https://github.com/yasmro/schatten). This site follows them as a
   consumer; it does not restate them.
-- Copy lives in `src/i18n/ui.ts` (en + ja, type-checked against each other). Explain
+- Copy lives in `src/i18n/ui.ts` (en + ja, type-checked against each other); per-component
+  guides live in `src/i18n/guides.ts` and foundations in `src/i18n/foundations.ts`, each string
+  holding both locales. Explain
   mechanisms plainly — what / against what / how — not metaphorically.

@@ -1,0 +1,34 @@
+---
+import { motionPage as m } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import MotionDemo from '../MotionDemo'
+import Rules from './Rules.astro'
+import SemanticSteps from './SemanticSteps.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const steps = listTokens().st
+---
+
+<Section title={m.scaleTitle[locale]} lead={m.scaleLead[locale]}>
+  <MotionDemo
+    client:load
+    steps={steps}
+    runLabel={m.run[locale]}
+    resetLabel={m.reset[locale]}
+    reducedNote={m.reducedNote[locale]}
+  />
+</Section>
+
+<Section title={m.semanticTitle[locale]} lead={m.semanticLead[locale]}>
+  <SemanticSteps locale={locale} steps={m.semantic} />
+</Section>
+
+<Section title={m.rulesTitle[locale]}>
+  <Rules rules={m.rules.map((rule) => rule[locale])} />
+</Section>

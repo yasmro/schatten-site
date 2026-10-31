@@ -21,11 +21,11 @@ import {
   CardTitle,
   Text,
 } from '@yasmro/schatten'
+import CodeBlock from '../../components/CodeBlock.astro'
 import LinkButton from '../../components/LinkButton'
 import Base from '../../layouts/Base.astro'
-import { defaultLocale, type Locale, locales, ui } from '../../i18n/ui'
+import { defaultLocale, type Locale, localePath, locales, ui } from '../../i18n/ui'
 import { libraryVersion } from '../../lib/library.mjs'
-import { STORYBOOK_ORIGIN } from '../../lib/storybook-links.mjs'
 
 // Version badge = the installed `@yasmro/schatten` version. The site depends
 // on the npm package, so this always names a published release.
@@ -40,6 +40,15 @@ export function getStaticPaths() {
 
 const { locale } = Astro.props as { locale: Locale }
 const t = ui[locale].landing
+
+const reactSample = `<Button variant="primary"
+  size="md">
+  ${t.proofRenderButton}
+</Button>`
+const htmlSample = `<button class="st-btn
+  st-btn--primary st-btn--md">
+  ${t.proofRenderButton}
+</button>`
 ---
 
 <Base locale={locale} description={t.metaDescription}>
@@ -55,7 +64,9 @@ const t = ui[locale].landing
         <LinkButton variant="primary" size="lg" href="https://github.com/yasmro/schatten#getting-started">
           {t.ctaGetStarted}
         </LinkButton>
-        <LinkButton variant="secondary" size="lg" href={STORYBOOK_ORIGIN}>{t.ctaStorybook}</LinkButton>
+        <LinkButton variant="secondary" size="lg" href={`${localePath(locale)}components/`}>
+          {t.ctaComponents}
+        </LinkButton>
       </div>
 
       <div class="hero__badges">
@@ -77,21 +88,13 @@ const t = ui[locale].landing
             <figcaption>
               <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">React</Text>
             </figcaption>
-            <pre
-              class="proof__code"><code>&lt;Button variant="primary"
-  size="md"&gt;
-  {t.proofRenderButton}
-&lt;/Button&gt;</code></pre>
+            <CodeBlock code={reactSample} lang="tsx" />
           </figure>
           <figure class="proof__pane">
             <figcaption>
               <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">Vanilla HTML</Text>
             </figcaption>
-            <pre
-              class="proof__code"><code>&lt;button class="st-btn
-  st-btn--primary st-btn--md"&gt;
-  {t.proofRenderButton}
-&lt;/button&gt;</code></pre>
+            <CodeBlock code={htmlSample} lang="html" />
           </figure>
           <div class="proof__render">
             <Text as="span" variant="label" size="xs" color="subtle" className="proof__caption">
@@ -174,19 +177,6 @@ const t = ui[locale].landing
   .proof__caption {
     letter-spacing: 0.08em;
     text-transform: uppercase;
-  }
-
-  /* No Schatten primitive for a code block yet — bespoke, on tokens only. */
-  .proof__code {
-    margin: 0;
-    padding: var(--spacing-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-control);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    line-height: 1.7;
-    overflow-x: auto;
   }
 
   .proof__render {

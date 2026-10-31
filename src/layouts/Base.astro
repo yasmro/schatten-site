@@ -68,6 +68,9 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
         <Text as="span" variant="heading" size="sm" family="serif">Schatten</Text>
       </a>
       <nav class="site-header__nav">
+        <LinkButton variant="tertiary" size="sm" href={`${localePath(locale)}foundations/`}>
+          {t.common.navFoundations}
+        </LinkButton>
         <LinkButton variant="tertiary" size="sm" href={`${localePath(locale)}components/`}>
           {t.common.navComponents}
         </LinkButton>
@@ -195,5 +198,6 @@ const THEME_TOGGLE_SCRIPT = `(function(){var KEY='schatten-theme';var root=docum
   /* Prose links inside Text components (set:html copy). */
   .page .st-text a {
     color: inherit;
+    text-decoration: underline;
   }
 </style>

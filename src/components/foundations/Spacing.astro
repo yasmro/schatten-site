@@ -1,0 +1,66 @@
+---
+import { Button, Text } from '@yasmro/schatten'
+import { spacingPage as s } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import DoDont from '../DoDont.astro'
+import Rules from './Rules.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const tokens = listTokens().spacing
+---
+
+<Section title={s.scaleTitle[locale]} lead={s.scaleLead[locale]}>
+  <ul class="fnd__list">
+    {
+      tokens.map(({ name, value }) => (
+        <li class="fnd__row">
+          <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+          <Text as="span" size="xs" color="subtle">{value}</Text>
+          <span class="fnd__bar" style={`width:var(${name})`} />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<Section title={s.recommendedTitle[locale]}>
+  {
+    [
+      { title: s.innerTitle, lead: s.innerLead, steps: s.innerSteps },
+      { title: s.outerTitle, lead: s.outerLead, steps: s.outerSteps },
+    ].map(({ title, lead, steps }) => (
+      <Section title={title[locale]} lead={lead[locale]} level="h3">
+        <ul class="fnd__steps">
+          {steps.map((step) => (
+            <li>
+              <span class="fnd__bar" style={`width:var(--spacing-${step})`} />
+              <Text as="span" size="xs" color="muted"><code>{step}</code></Text>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+</Section>
+
+<Section title={s.stayTitle[locale]}>
+  <Rules rules={s.stayRules.map((rule) => rule[locale])} />
+  <DoDont locale={locale}>
+    <div slot="dont" class="fnd__gap" style="gap:var(--spacing-7);padding:var(--spacing-9)">
+      <Button>{s.save[locale]}</Button>
+      <Button variant="secondary">{s.cancel[locale]}</Button>
+    </div>
+    <div slot="do" class="fnd__gap" style="gap:var(--spacing-2);padding:var(--spacing-4)">
+      <Button>{s.save[locale]}</Button>
+      <Button variant="secondary">{s.cancel[locale]}</Button>
+    </div>
+  </DoDont>
+</Section>
+
+<Section title={s.layoutTitle[locale]} lead={s.layoutLead[locale]} />

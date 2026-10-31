@@ -1,0 +1,87 @@
+---
+// Foundations index: one card per page. See ./foundations/[slug].astro.
+import { Card, CardDescription, CardHeader, CardTitle, Text } from '@yasmro/schatten'
+import Base from '../../layouts/Base.astro'
+import { foundationPages, foundationsIndex as t } from '../../i18n/foundations'
+import { defaultLocale, type Locale, localePath, locales } from '../../i18n/ui'
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({
+    params: { locale: locale === defaultLocale ? undefined : locale },
+    props: { locale },
+  }))
+}
+
+const { locale } = Astro.props as { locale: Locale }
+---
+
+<Base
+  locale={locale}
+  description={t.metaDescription[locale]}
+  title={t.title[locale]}
+  page="foundations"
+>
+  <main class="page">
+    <section class="intro">
+      <Text as="h1" variant="heading" size="2xl" family="serif">{t.title[locale]}</Text>
+      <Text as="p" size="lg" color="muted" leading="relaxed" className="intro__lead">
+        {t.lead[locale]}
+      </Text>
+    </section>
+
+    <ul class="catalog">
+      {
+        foundationPages.map(({ slug, title, summary }) => (
+          <li>
+            <a class="catalog__link" href={`${localePath(locale)}foundations/${slug}/`}>
+              <Card className="catalog__card">
+                <CardHeader>
+                  <CardTitle>{title[locale]}</CardTitle>
+                  <CardDescription>{summary[locale]}</CardDescription>
+                </CardHeader>
+              </Card>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</Base>
+
+<style is:global>
+  /* LAYOUT only — type / color / controls come from the components. */
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .intro__lead {
+    max-width: 44rem;
+  }
+
+  .catalog {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: var(--spacing-3);
+  }
+
+  .catalog__link {
+    display: block;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .catalog__card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .catalog__link:hover .catalog__card {
+    border-color: var(--color-border-strong);
+  }
+</style>

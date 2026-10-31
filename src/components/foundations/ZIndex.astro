@@ -1,0 +1,48 @@
+---
+import { Text } from '@yasmro/schatten'
+import { zIndexPage as z } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import Rules from './Rules.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<Section title={z.scaleTitle[locale]} lead={z.scaleLead[locale]}>
+  <ul class="fnd__list">
+    {
+      listTokens().z.map(({ name, value }) => (
+        <li class="fnd__row">
+          <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+          <Text as="span" size="xs" color="subtle">{value}</Text>
+          <Text as="span" size="sm" color="muted">{z.layers[name]?.[locale]}</Text>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<Section title={z.paintTitle[locale]} lead={z.paintLead[locale]}>
+  {/* `isolation` keeps these z-index values from competing with the page's. */}
+  <div class="fnd__stack">
+    {
+      z.paintTokens.map((name, i) => (
+        <div
+          class="fnd__layer"
+          style={`z-index:var(${name});--offset:${z.paintTokens.length - 1 - i}`}
+        >
+          <Text as="span" size="xs"><code>{name}</code></Text>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<Section title={z.ruleTitle[locale]}>
+  <Rules rules={z.rules.map((rule) => rule[locale])} />
+</Section>

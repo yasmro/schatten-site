@@ -1,0 +1,185 @@
+---
+// Semantic colours, with the primitive each one references in light and dark.
+// The list is checked against the package both ways, and every reference must
+// be something the primitive page shows.
+import { Text } from '@yasmro/schatten'
+import {
+  colorGroups,
+  colorPage as c,
+  colorStates,
+  inkAndPaper,
+  inkAndPaperInverted,
+} from '../../i18n/foundations'
+import { type Locale, ui } from '../../i18n/ui'
+import {
+  listColorReferences,
+  listColorScales,
+  listSeasons,
+  listTokens,
+} from '../../lib/library.mjs'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const seasonNames = ui[locale].brand.seasonNames
+
+const published = listTokens().color.map(({ name }) => name.slice('--color-'.length))
+const listed = colorGroups.flatMap(({ tokens }) => tokens.map(({ name }) => name))
+const mismatch = [
+  ...published.filter((name) => !name.startsWith('theme-') && !listed.includes(name)),
+  ...listed.filter((name) => !published.includes(name)),
+]
+if (mismatch.length > 0) {
+  throw new Error(
+    `colour tokens out of step with the package: ${mismatch.join(', ')} — update colorGroups in src/i18n/foundations.ts`,
+  )
+}
+
+const references = listColorReferences()
+const primitives = new Set([
+  ...[...inkAndPaper, ...inkAndPaperInverted].map(({ name }) => `--${name}`),
+  ...Object.entries(listColorScales()).flatMap(([name, steps]) =>
+    steps.map((step) => `--${name}-${step}`),
+  ),
+])
+const unshown = listed
+  .flatMap((name) => {
+    const ref = references[`--color-${name}`]
+    if (!ref) throw new Error(`no reference for --color-${name} in core/tokens/semantic.css`)
+    return [ref.light, ref.dark]
+  })
+  .filter((target) => !target.startsWith('--color-theme-') && !primitives.has(target))
+if (unshown.length > 0) {
+  throw new Error(
+    `semantic colours reference primitives the site does not show: ${unshown.join(', ')} — update src/i18n/foundations.ts`,
+  )
+}
+
+const themeSteps = published
+  .filter((name) => name.startsWith('theme-'))
+  .map((name) => name.slice('theme-'.length))
+  .sort((a, b) => Number(a) - Number(b))
+
+const seasons = listSeasons()
+const firstState = colorGroups.findIndex(({ tokens }) => tokens[0].name === 'destructive')
+---
+
+<Section title={c.tokensTitle[locale]} level="h3">
+  {
+    colorGroups.map((group, i) => (
+      <>
+        {i === firstState && (
+          <Section title={c.stateTitle[locale]} lead={c.stateLead[locale]} level="h4" />
+        )}
+        <Section title={group.title[locale]} lead={group.note?.[locale]} level="h4">
+          <ul class="fnd__list">
+            {group.tokens.map(({ name, role }) => {
+              const { light, dark } = references[`--color-${name}`]
+              return (
+                <li class="fnd__color">
+                  <span class="fnd__swatches">
+                    <span class="fnd__swatch" title={c.light[locale]} style={`background:var(${light})`} />
+                    <span class="fnd__swatch" title={c.dark[locale]} style={`background:var(${dark})`} />
+                  </span>
+                  <div class="fnd__text">
+                    <Text as="span" size="sm"><code>--color-{name}</code></Text>
+                    <Text as="span" size="xs" color="muted">{role[locale]}</Text>
+                    <span class="fnd__refs">
+                      <Text as="span" size="xs" color="subtle">
+                        {c.light[locale]} → <code>{light}</code>
+                      </Text>
+                      <Text as="span" size="xs" color="subtle">
+                        {c.dark[locale]} → <code>{dark}</code>
+                      </Text>
+                    </span>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </Section>
+      </>
+    ))
+  }
+</Section>
+
+<Section title={c.treatmentsTitle[locale]} lead={c.treatmentsLead[locale]} level="h3">
+  <Section title={c.nonInteractiveTitle[locale]} lead={c.nonInteractiveLead[locale]} level="h4">
+    <div class="fnd__samples">
+      <div
+        class="fnd__sample"
+        style="background:var(--color-surface-disabled);color:var(--color-foreground-disabled);border-color:var(--color-border-disabled)"
+      >
+        <code>disabled</code><span>{c.sample[locale]}</span>
+      </div>
+      <div
+        class="fnd__sample"
+        style="background:var(--color-surface-readonly);color:var(--color-foreground);border-color:var(--color-border-readonly)"
+      >
+        <code>readOnly</code><span>{c.sample[locale]}</span>
+      </div>
+    </div>
+  </Section>
+  <Section title={c.filledTitle[locale]} lead={c.filledLead[locale]} level="h4">
+    <div class="fnd__samples">
+      {
+        colorStates.map((state) => (
+          <div
+            class="fnd__sample"
+            style={`background:var(--color-${state});color:var(--color-${state}-foreground);border-color:transparent`}
+          >
+            <code>{state}</code><span>{c.sample[locale]}</span>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+  <Section title={c.subtleTitle[locale]} lead={c.subtleLead[locale]} level="h4">
+    <div class="fnd__samples">
+      {
+        colorStates.map((state) => (
+          <div
+            class="fnd__sample"
+            style={`background:var(--color-${state}-subtle);color:var(--color-${state}-emphasis)`}
+          >
+            <code>{state}</code><span>{c.sample[locale]}</span>
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+</Section>
+
+<Section title={c.themeTitle[locale]} lead={c.themeNote[locale]} level="h3">
+  <ul class="fnd__scale">
+    {
+      themeSteps.map((step) => (
+        <li>
+          <span class="fnd__chip" style={`background:var(--color-theme-${step})`} />
+          <Text as="span" size="xs" color="muted">{step}</Text>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<Section title={c.seasonsTitle[locale]} lead={c.seasonsLead[locale]} level="h3">
+  {
+    seasons.map(({ id, steps }, i) => (
+      <Section title={seasonNames[i]} level="h4">
+        <Text as="span" size="xs" color="muted"><code>{id}</code></Text>
+        <ul class="fnd__scale">
+          {steps.map(({ step, value }) => (
+            <li>
+              <span class="fnd__chip" style={`background:${value}`} />
+              <Text as="span" size="xs" color="muted">{step}</Text>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+</Section>

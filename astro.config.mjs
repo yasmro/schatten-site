@@ -16,4 +16,12 @@ export default defineConfig({
   site: 'https://yasmro.github.io',
   base: process.env.SITE_BASE || '/',
   integrations: [react()],
+  // Pre-bundle the islands' dependencies at dev-server start. Discovered lazily,
+  // they can go stale mid-session: the requests fail with 504 and the islands
+  // stay unhydrated static HTML, with no visible error.
+  vite: {
+    optimizeDeps: {
+      include: ['@yasmro/schatten', 'lucide-react'],
+    },
+  },
 })

@@ -1,0 +1,34 @@
+---
+import { Text } from '@yasmro/schatten'
+import { radiusPage as r } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import SemanticSteps from './SemanticSteps.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const semantic = new Set(r.semantic.map(({ name }) => name))
+const scale = listTokens().radius.filter(({ name }) => !semantic.has(name))
+---
+
+<Section title={r.scaleTitle[locale]} lead={r.scaleLead[locale]}>
+  <ul class="fnd__tiles">
+    {
+      scale.map(({ name, value }) => (
+        <li>
+          <span class="fnd__box" style={`border-radius:var(${name})`} />
+          <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+          <Text as="span" size="xs" color="subtle">{value}</Text>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<Section title={r.semanticTitle[locale]} lead={r.semanticLead[locale]}>
+  <SemanticSteps locale={locale} steps={r.semantic} property="border-radius" />
+</Section>
