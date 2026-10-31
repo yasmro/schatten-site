@@ -1,9 +1,12 @@
+import type { CategoryId } from './guides'
+
 // Site copy, both locales. Strings that carry inline markup (<code>…</code>)
 // are marked `Html` and injected with `set:html` — they are authored
 // constants, never user input.
 //
 // Shape: `common` (shell chrome) + one group per page. A missing string in
 // either locale is a type error, so the two editions cannot drift apart.
+// Per-component guide copy is in ./guides.ts.
 
 // `en` is the default locale: it renders at `/`, and `ja` at `/ja/`.
 // The site's primary reader is an evaluator who may not read Japanese, so the
@@ -19,6 +22,7 @@ interface Common {
   themeToggleLabel: string
   navBrand: string
   navComponents: string
+  navFoundations: string
 }
 
 interface Landing {
@@ -26,7 +30,7 @@ interface Landing {
   heroTitle: string
   heroLead: Html
   ctaGetStarted: string
-  ctaStorybook: string
+  ctaComponents: string
   proofTitle: string
   proofDesc: string
   proofRenderLabel: string
@@ -98,8 +102,54 @@ interface ComponentsPage {
   switchLabel: string
   errorToggleLabel: string
   inputPlaceholder: string
-  listTitle: string
   listLead: Html
+  categories: Record<CategoryId, string>
+  storybookTitle: string
+  storybookNote: Html
+}
+
+interface ComponentDetail {
+  backLabel: string
+  usageTitle: string
+  guideTitle: string
+  doLabel: string
+  dontLabel: string
+  storybookCta: string
+}
+
+/** Labels inside the live examples on the component pages. */
+export interface DemoCopy {
+  save: string
+  cancel: string
+  delete: string
+  draft: string
+  status: string
+  name: string
+  email: string
+  errorMessage: string
+  notifications: string
+  terms: string
+  message: string
+  open: string
+  menuRename: string
+  menuDuplicate: string
+  dialogTitle: string
+  dialogBody: string
+  optionA: string
+  optionB: string
+  tabA: string
+  tabB: string
+  tabBodyA: string
+  tabBodyB: string
+  hint: string
+  noticeTitle: string
+  noticeBody: string
+  tableCaption: string
+  tableItem: string
+  tableAmount: string
+  toastTitle: string
+  cardTitle: string
+  cardBody: string
 }
 
 interface Strings {
@@ -107,6 +157,8 @@ interface Strings {
   landing: Landing
   brand: Brand
   components: ComponentsPage
+  detail: ComponentDetail
+  demo: DemoCopy
 }
 
 export const ui: Record<Locale, Strings> = {
@@ -116,6 +168,7 @@ export const ui: Record<Locale, Strings> = {
       themeToggleLabel: 'Toggle light / dark mode',
       navBrand: 'Brand',
       navComponents: 'Components',
+      navFoundations: 'Foundations',
     },
     landing: {
       metaDescription:
@@ -124,7 +177,7 @@ export const ui: Record<Locale, Strings> = {
       heroLead:
         'React components, and CSS classes you can use in plain HTML. Schatten ships both on one set of design tokens.<br>This page is built with the React components and rendered to static HTML at build time; what reaches your browser is that HTML and the single stylesheet we publish.',
       ctaGetStarted: 'Get started',
-      ctaStorybook: 'View Storybook',
+      ctaComponents: 'Browse components',
       proofTitle: 'One button, two ways to write it',
       proofDesc:
         'React or plain HTML — the same single stylesheet arrives, so the render is identical.',
@@ -227,7 +280,7 @@ export const ui: Record<Locale, Strings> = {
       metaDescription:
         'Every Schatten component, with a live React island — the second delivery layer, running on this page.',
       title: 'Components',
-      lead: 'The full catalog — stories, props, and every visual state — lives in <a href="%STORYBOOK%">Storybook</a>. This page is the index, plus one living proof: a corner of it runs the real React layer.',
+      lead: 'Every component, with a guide on when and how to use it.',
       liveTitle: 'Live — this corner is a React island',
       liveDesc:
         'The rest of this site uses the same React components, rendered to static HTML at build time with no JavaScript shipped. This card hydrates them for real — real state, real events, real ARIA wiring — through the same exports map a consumer uses.',
@@ -236,9 +289,60 @@ export const ui: Record<Locale, Strings> = {
       switchLabel: 'Notifications',
       errorToggleLabel: 'Show the error state',
       inputPlaceholder: 'Email address',
-      listTitle: 'All components',
       listLead:
-        'Generated at build time from the published <code>@yasmro/schatten</code> package — every component that ships a CSS subpath. Each links to its Storybook page.',
+        'Generated at build time from the published <code>@yasmro/schatten</code> package: every component that ships a CSS subpath.',
+      categories: {
+        action: 'Action',
+        form: 'Form',
+        display: 'Data display',
+        navigation: 'Navigation',
+        feedback: 'Feedback',
+        overlay: 'Overlay',
+      },
+      storybookTitle: 'Storybook',
+      storybookNote:
+        '<a href="%STORYBOOK%">Storybook</a> is where behavior is verified and tested. Each component page links to its own entry.',
+    },
+    detail: {
+      backLabel: 'All components',
+      usageTitle: 'Usage',
+      guideTitle: 'Guidelines',
+      doLabel: 'Do',
+      dontLabel: 'Don’t',
+      storybookCta: 'Open in Storybook',
+    },
+    demo: {
+      save: 'Save',
+      cancel: 'Cancel',
+      delete: 'Delete',
+      draft: 'Draft',
+      status: 'Active',
+      name: 'Name',
+      email: 'Email address',
+      errorMessage: 'Enter a full address, like name@example.com.',
+      notifications: 'Notifications',
+      terms: 'Accept the terms',
+      message: 'Message',
+      open: 'Open',
+      menuRename: 'Rename',
+      menuDuplicate: 'Duplicate',
+      dialogTitle: 'Delete this project?',
+      dialogBody: 'This cannot be undone.',
+      optionA: 'Free',
+      optionB: 'Pro',
+      tabA: 'Account',
+      tabB: 'Billing',
+      tabBodyA: 'Account settings.',
+      tabBodyB: 'Billing settings.',
+      hint: 'A short hint',
+      noticeTitle: 'Trial ends soon',
+      noticeBody: 'Add a payment method to keep your data.',
+      tableCaption: 'Invoices',
+      tableItem: 'Item',
+      tableAmount: 'Amount',
+      toastTitle: 'Saved',
+      cardTitle: 'Usage',
+      cardBody: '12 of 20 seats in use.',
     },
   },
   ja: {
@@ -247,6 +351,7 @@ export const ui: Record<Locale, Strings> = {
       themeToggleLabel: 'ライト / ダークを切り替え',
       navBrand: 'ブランド',
       navComponents: 'コンポーネント',
+      navFoundations: 'ファンデーション',
     },
     landing: {
       metaDescription:
@@ -255,7 +360,7 @@ export const ui: Record<Locale, Strings> = {
       heroLead:
         'React のコンポーネントと、素の HTML で使える CSS クラス。Schatten はこの両方を、共通のデザイントークンの上で提供しています。<br>このページ自体も React コンポーネントで組み、ビルド時に静的 HTML へ書き出しています。ブラウザに届くのは、その HTML と配布している CSS 1 枚です。',
       ctaGetStarted: 'Get started',
-      ctaStorybook: 'Storybook を見る',
+      ctaComponents: 'コンポーネントを見る',
       proofTitle: 'ひとつのボタン、ふたつの書き方',
       proofDesc: 'React でも、素の HTML でも、届く CSS は同じ 1 枚。だから描画も同じになります。',
       proofRenderLabel: 'Render(このページの実物)',
@@ -346,7 +451,7 @@ export const ui: Record<Locale, Strings> = {
       metaDescription:
         'Schatten の全コンポーネント一覧と、React island によるライブデモ — 第二の配信層がこのページで動いている。',
       title: 'コンポーネント',
-      lead: '完全なカタログ(stories・props・全状態)は <a href="%STORYBOOK%">Storybook</a> にある。このページはその索引であり、ひとつの生きた証明でもある。ページの一角だけ、本物の React 層が動いている。',
+      lead: '全コンポーネントの一覧。各ページに、使いどころと使い方のガイドがある。',
       liveTitle: 'Live — この一角だけ React island',
       liveDesc:
         'サイトの他の部分も同じ React コンポーネントで組んでいるが、ビルド時に静的 HTML へ書き出していて JavaScript は届かない。この一角だけは hydrate していて、state もイベントも ARIA 配線も実際に動く。利用者が使うのと同じ exports map を、そのまま経由している。',
@@ -355,9 +460,60 @@ export const ui: Record<Locale, Strings> = {
       switchLabel: '通知',
       errorToggleLabel: 'エラー状態にする',
       inputPlaceholder: 'メールアドレス',
-      listTitle: '全コンポーネント',
       listLead:
-        'ビルド時に npm の <code>@yasmro/schatten</code> パッケージから生成している。CSS サブパスを持つコンポーネントがそのまま並ぶ。各項目は Storybook の該当ページへリンクする。',
+        'ビルド時に npm の <code>@yasmro/schatten</code> パッケージから生成している。CSS サブパスを持つコンポーネントがそのまま並ぶ。',
+      categories: {
+        action: 'アクション',
+        form: 'フォーム',
+        display: 'データ表示',
+        navigation: 'ナビゲーション',
+        feedback: 'フィードバック',
+        overlay: 'オーバーレイ',
+      },
+      storybookTitle: 'Storybook',
+      storybookNote:
+        '動作検証とテストは <a href="%STORYBOOK%">Storybook</a> で行う。各コンポーネントのページから、該当する項目へ移動できる。',
+    },
+    detail: {
+      backLabel: 'コンポーネント一覧',
+      usageTitle: '使い方',
+      guideTitle: 'ガイドライン',
+      doLabel: 'Do',
+      dontLabel: 'Don’t',
+      storybookCta: 'Storybook で開く',
+    },
+    demo: {
+      save: '保存',
+      cancel: 'キャンセル',
+      delete: '削除',
+      draft: '下書き',
+      status: '有効',
+      name: '名前',
+      email: 'メールアドレス',
+      errorMessage: 'name@example.com の形式で入力してください。',
+      notifications: '通知',
+      terms: '利用規約に同意する',
+      message: 'メッセージ',
+      open: '開く',
+      menuRename: '名前を変更',
+      menuDuplicate: '複製',
+      dialogTitle: 'このプロジェクトを削除しますか?',
+      dialogBody: 'この操作は取り消せません。',
+      optionA: 'Free',
+      optionB: 'Pro',
+      tabA: 'アカウント',
+      tabB: '請求',
+      tabBodyA: 'アカウントの設定。',
+      tabBodyB: '請求の設定。',
+      hint: '短い補足',
+      noticeTitle: 'トライアルがまもなく終了します',
+      noticeBody: 'データを保持するには、支払い方法を追加してください。',
+      tableCaption: '請求書',
+      tableItem: '項目',
+      tableAmount: '金額',
+      toastTitle: '保存しました',
+      cardTitle: '利用状況',
+      cardBody: '20 席中 12 席を使用中。',
     },
   },
 }

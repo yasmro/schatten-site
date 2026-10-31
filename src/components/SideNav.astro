@@ -1,0 +1,120 @@
+---
+// Side menu of the two-column pages (components, foundations), and the `.docs`
+// layout it sits in. Links are LinkButtons, so the look is the Button's.
+import { Text } from '@yasmro/schatten'
+import LinkButton from './LinkButton'
+
+interface Props {
+  /** Accessible name of the menu. */
+  label: string
+  groups: readonly {
+    title?: string
+    items: readonly { href: string; label: string; current: boolean }[]
+  }[]
+}
+
+const { label, groups } = Astro.props
+---
+
+<nav class="sidenav" aria-label={label}>
+  {
+    groups.map(({ title, items }) => (
+      <div class="sidenav__group">
+        {title && (
+          <Text as="span" variant="label" size="xs" color="subtle" className="sidenav__category">
+            {title}
+          </Text>
+        )}
+        <ul class="sidenav__list">
+          {items.map((item) => (
+            <li>
+              <LinkButton
+                variant="tertiary"
+                size="sm"
+                href={item.href}
+                aria-current={item.current ? 'page' : undefined}
+                className="sidenav__link"
+              >
+                {item.label}
+              </LinkButton>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</nav>
+
+<style is:global>
+  /* LAYOUT only — type / color / controls come from the components. */
+  .docs {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+  }
+
+  /* The link back to the index. The side menu takes over on wide screens. */
+  .docs__back {
+    display: none;
+    align-self: flex-start;
+    text-decoration: none;
+  }
+
+  .sidenav {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100dvh;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: var(--spacing-8) var(--spacing-4) var(--spacing-8) var(--spacing-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+  }
+
+  .sidenav__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .sidenav__category {
+    padding-left: var(--spacing-3);
+  }
+
+  .sidenav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* A Button stretched to the column; the look is the Button's. */
+  .sidenav__link {
+    width: 100%;
+    justify-content: flex-start;
+    text-decoration: none;
+  }
+
+  /* An inset shadow takes no space, so the label stays in line with the others
+   * (secondary's border would push it in by 1px). Button draws its focus ring
+   * with box-shadow too; leave that one in place. */
+  .sidenav__link[aria-current='page']:not(:focus-visible) {
+    box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  }
+
+  /* Too narrow for two columns: back to one, with the link to the index. */
+  @media (max-width: 64rem) {
+    .docs {
+      display: block;
+    }
+
+    .sidenav {
+      display: none;
+    }
+
+    .docs__back {
+      display: inline-flex;
+    }
+  }
+</style>

@@ -1,0 +1,192 @@
+---
+// One page per lv1 the installed package ships: a live example, usage, the
+// guide (src/i18n/guides.ts), and an icon link to Storybook, which is where
+// behaviour is verified and tested.
+//
+// Built from Schatten's React components, rendered to static HTML. Only the
+// demo hydrates. See CLAUDE.md.
+import {
+  Badge,
+  Card,
+  CardContent,
+  Text,
+} from '@yasmro/schatten'
+import { ExternalLink } from 'lucide-react'
+import CodeBlock from '../../../components/CodeBlock.astro'
+import ComponentDemo from '../../../components/ComponentDemo'
+import DoDont from '../../../components/DoDont.astro'
+import GuideExample from '../../../components/GuideExample'
+import LinkButton from '../../../components/LinkButton'
+import SideNav from '../../../components/SideNav.astro'
+import Base from '../../../layouts/Base.astro'
+import { groupByCategory, guides } from '../../../i18n/guides'
+import { defaultLocale, type Locale, locales, localePath, ui } from '../../../i18n/ui'
+import { listComponents } from '../../../lib/library.mjs'
+import { storybookDocsUrl } from '../../../lib/storybook-links.mjs'
+
+export async function getStaticPaths() {
+  const components = await listComponents()
+  return locales.flatMap((locale) =>
+    components.map(({ slug, name }) => {
+      if (!guides[slug]) {
+        throw new Error(`no guide for "${slug}" — add it to src/i18n/guides.ts`)
+      }
+      return {
+        params: { locale: locale === defaultLocale ? undefined : locale, slug },
+        props: { locale, slug, name },
+      }
+    }),
+  )
+}
+
+const { locale, slug, name } = Astro.props as { locale: Locale; slug: string; name: string }
+const t = ui[locale]
+const guide = guides[slug]
+const navGroups = groupByCategory(await listComponents()).map(({ id, items }) => ({
+  title: t.components.categories[id],
+  items: items.map((item) => ({
+    href: `${localePath(locale)}components/${item.slug}/`,
+    label: item.name,
+    current: item.slug === slug,
+  })),
+}))
+---
+
+<Base
+  locale={locale}
+  description={guide.summary[locale]}
+  title={name}
+  page={`components/${slug}`}
+>
+  <div class="docs">
+    <SideNav label={t.common.navComponents} groups={navGroups} />
+    <main class="page detail">
+    <section class="detail__intro">
+      <LinkButton
+        variant="tertiary"
+        size="sm"
+        href={`${localePath(locale)}components/`}
+        className="docs__back"
+      >
+        {t.detail.backLabel}
+      </LinkButton>
+      <div class="detail__title">
+        <Text as="h1" variant="heading" size="2xl" family="serif">{name}</Text>
+        <Badge variant="neutral" appearance="outline" size="sm">
+          {t.components.categories[guide.category]}
+        </Badge>
+        <LinkButton
+          variant="tertiary"
+          size="md"
+          icon={ExternalLink}
+          href={storybookDocsUrl(name)}
+          aria-label={t.detail.storybookCta}
+          title={t.detail.storybookCta}
+          className="detail__storybook"
+        />
+      </div>
+      <Text as="p" size="lg" color="muted" leading="relaxed" className="detail__lead">
+        {guide.summary[locale]}
+      </Text>
+    </section>
+
+    <Card>
+      <CardContent className="detail__stage">
+        <ComponentDemo client:load slug={slug} copy={t.demo} />
+      </CardContent>
+    </Card>
+
+    <section class="detail__section">
+      <Text as="h2" variant="heading" size="xl" family="serif">{t.detail.usageTitle}</Text>
+      <CodeBlock code={guide.usage} lang="tsx" />
+    </section>
+
+    <section class="detail__section">
+      <Text as="h2" variant="heading" size="xl" family="serif">{t.detail.guideTitle}</Text>
+      {
+        guide.sections.map((section) => (
+          <article class="guide">
+            <Text as="h3" variant="heading" size="md">{section.title[locale]}</Text>
+            <ul class="guide__rules">
+              {section.rules.map((rule) => (
+                <li>
+                  <Text as="span" size="md" leading="relaxed" set:html={rule[locale]} />
+                </li>
+              ))}
+            </ul>
+            {section.example && (
+              <DoDont locale={locale}>
+                <GuideExample slot="dont" id={section.example} side="dont" copy={t.demo} />
+                <GuideExample slot="do" id={section.example} side="do" copy={t.demo} />
+              </DoDont>
+            )}
+          </article>
+        ))
+      }
+    </section>
+    </main>
+  </div>
+</Base>
+
+<style is:global>
+  /* LAYOUT only — type / color / controls come from the components. */
+  .detail__intro,
+  .detail__section,
+  .guide {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .detail__section {
+    gap: var(--spacing-6);
+  }
+
+  .detail__title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+
+  .detail__storybook {
+    margin-left: auto;
+  }
+
+  .detail__lead {
+    max-width: 44rem;
+  }
+
+  .detail__stage {
+    padding-top: var(--spacing-6);
+  }
+
+  .detail__demo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+
+  /* Block-level children (Field, Table, Card, Callout) take the full row. */
+  .detail__demo > .st-table,
+  .detail__demo > [class*='st-field'],
+  .detail__demo > [class*='st-fieldset'],
+  .detail__demo > [class*='st-callout'],
+  .detail__demo > [class*='st-card'] {
+    flex: 1 1 100%;
+  }
+
+  .guide + .guide {
+    margin-top: var(--spacing-4);
+  }
+
+  .guide__rules {
+    list-style: disc;
+    margin: 0;
+    padding-left: var(--spacing-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+// A highlighted code block. Shiki's `css-variables` theme emits `--astro-code-*`
+// instead of colours; they are mapped to Schatten's tokens below, so the block
+// holds no literal colour and follows light / dark with the token layer.
+import { Code } from 'astro:components'
+
+interface Props {
+  code: string
+  lang: 'tsx' | 'html'
+}
+
+const { code, lang } = Astro.props
+---
+
+<Code code={code} lang={lang} theme="css-variables" class="code-block" />
+
+<style is:global>
+  .code-block {
+    --astro-code-foreground: var(--color-foreground);
+    --astro-code-background: var(--color-surface);
+    --astro-code-token-keyword: var(--color-vermillion);
+    --astro-code-token-function: var(--color-info-emphasis);
+    --astro-code-token-constant: var(--color-info-emphasis);
+    --astro-code-token-parameter: var(--color-foreground);
+    --astro-code-token-string: var(--color-success-emphasis);
+    --astro-code-token-string-expression: var(--color-success-emphasis);
+    --astro-code-token-comment: var(--color-foreground-muted);
+    --astro-code-token-punctuation: var(--color-foreground-muted);
+    --astro-code-token-link: var(--color-info-emphasis);
+
+    /* No Schatten primitive for a code block yet — bespoke, on tokens only. */
+    margin: 0;
+    padding: var(--spacing-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+</style>

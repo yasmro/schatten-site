@@ -1,0 +1,29 @@
+---
+// Color page: the two tiers, one after the other, so a semantic color can be
+// read against the primitive it references.
+import { colorPage as c } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import LinkButton from '../LinkButton'
+import ColorPrimitive from './ColorPrimitive.astro'
+import ColorSemantic from './ColorSemantic.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<nav class="fnd__jump">
+  <LinkButton variant="secondary" size="sm" href="#primitive">{c.primitiveTitle[locale]}</LinkButton>
+  <LinkButton variant="secondary" size="sm" href="#semantic">{c.semanticTitle[locale]}</LinkButton>
+</nav>
+
+<Section title={c.primitiveTitle[locale]} lead={c.primitiveLead[locale]} id="primitive">
+  <ColorPrimitive locale={locale} />
+</Section>
+
+<Section title={c.semanticTitle[locale]} lead={c.semanticLead[locale]} id="semantic">
+  <ColorSemantic locale={locale} />
+</Section>

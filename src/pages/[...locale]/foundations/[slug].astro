@@ -1,0 +1,375 @@
+---
+// One page per foundation. Each page's content is a component in
+// src/components/foundations/; the shell and shared specimen styles are here.
+// Every specimen paints through a token or a value read from the package.
+import { Text } from '@yasmro/schatten'
+import Color from '../../../components/foundations/Color.astro'
+import Elevation from '../../../components/foundations/Elevation.astro'
+import Motion from '../../../components/foundations/Motion.astro'
+import Radius from '../../../components/foundations/Radius.astro'
+import Spacing from '../../../components/foundations/Spacing.astro'
+import Typography from '../../../components/foundations/Typography.astro'
+import ZIndex from '../../../components/foundations/ZIndex.astro'
+import LinkButton from '../../../components/LinkButton'
+import SideNav from '../../../components/SideNav.astro'
+import Base from '../../../layouts/Base.astro'
+import { foundationPages, foundationsIndex, type FoundationSlug } from '../../../i18n/foundations'
+import { defaultLocale, type Locale, localePath, locales, ui } from '../../../i18n/ui'
+
+const contents = {
+  color: Color,
+  typography: Typography,
+  spacing: Spacing,
+  radius: Radius,
+  elevation: Elevation,
+  motion: Motion,
+  'z-index': ZIndex,
+} satisfies Record<FoundationSlug, unknown>
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    foundationPages.map(({ slug }) => ({
+      params: { locale: locale === defaultLocale ? undefined : locale, slug },
+      props: { locale, slug },
+    })),
+  )
+}
+
+const { locale, slug } = Astro.props as { locale: Locale; slug: FoundationSlug }
+const page = foundationPages.find((p) => p.slug === slug)
+if (!page) throw new Error(`no foundation page "${slug}"`)
+const Content = contents[slug]
+const indexHref = `${localePath(locale)}foundations/`
+const navGroups = [
+  {
+    items: foundationPages.map((p) => ({
+      href: `${indexHref}${p.slug}/`,
+      label: p.title[locale],
+      current: p.slug === slug,
+    })),
+  },
+]
+---
+
+<Base
+  locale={locale}
+  description={page.summary[locale]}
+  title={page.title[locale]}
+  page={`foundations/${slug}`}
+>
+  <div class="docs">
+    <SideNav label={ui[locale].common.navFoundations} groups={navGroups} />
+    <main class="page fnd">
+      <section class="fnd__section">
+        <LinkButton variant="tertiary" size="sm" href={indexHref} className="docs__back">
+          {foundationsIndex.back[locale]}
+        </LinkButton>
+        <Text as="h1" variant="heading" size="2xl" family="serif">{page.title[locale]}</Text>
+        <Text
+          as="p"
+          size="lg"
+          color="muted"
+          leading="relaxed"
+          className="fnd__measure"
+          set:html={page.lead[locale]}
+        />
+      </section>
+      <Content locale={locale} />
+    </main>
+  </div>
+</Base>
+
+<style is:global>
+  /* LAYOUT and specimens only — every painted value is a token. */
+  .fnd__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .fnd__section .fnd__section {
+    margin-top: var(--spacing-4);
+  }
+
+  .fnd__section[id] {
+    scroll-margin-top: var(--spacing-8);
+  }
+
+  .fnd__jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+    margin-top: calc(var(--spacing-8) * -1);
+  }
+
+  .fnd__jump a {
+    text-decoration: none;
+  }
+
+  .fnd__measure {
+    max-width: 44rem;
+  }
+
+  .fnd__list,
+  .fnd__scale,
+  .fnd__steps,
+  .fnd__tiles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fnd__list > li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .fnd__list {
+    padding: 0 var(--spacing-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__rules {
+    margin: 0;
+    padding-left: var(--spacing-5);
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .fnd__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .fnd__color {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-3) 0;
+  }
+
+  .fnd__swatches {
+    flex: none;
+    display: flex;
+    gap: var(--spacing-1);
+  }
+
+  .fnd__refs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--spacing-4);
+  }
+
+  .fnd__swatch {
+    flex: none;
+    width: var(--spacing-10);
+    height: var(--spacing-10);
+    box-sizing: border-box;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__samples {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .fnd__sample {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+    font-size: var(--text-sm);
+  }
+
+  .fnd__sample code {
+    font-size: var(--text-xs);
+  }
+
+  .fnd__scale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(2.5rem, 1fr));
+    gap: var(--spacing-1);
+  }
+
+  .fnd__scale li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+
+  .fnd__chip {
+    width: 100%;
+    aspect-ratio: 1;
+    box-sizing: border-box;
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__row {
+    display: grid;
+    grid-template-columns: 12rem 5rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-3) 0;
+  }
+
+  .fnd__face,
+  .fnd__role {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    padding: var(--spacing-4) 0;
+  }
+
+  .fnd__specimen {
+    color: var(--color-foreground);
+    line-height: var(--leading-tight);
+  }
+
+  .fnd__face .fnd__specimen {
+    font-size: var(--text-xl);
+  }
+
+  .fnd__bar {
+    display: block;
+    height: var(--spacing-4);
+    background: var(--color-theme-500);
+  }
+
+  .fnd__steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--spacing-5);
+  }
+
+  .fnd__steps li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+
+  .fnd__gap {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px dashed var(--color-border-strong);
+  }
+
+  .fnd__box {
+    flex: none;
+    display: block;
+    width: var(--spacing-16);
+    height: var(--spacing-16);
+    box-sizing: border-box;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+  }
+
+  .fnd__tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: var(--spacing-6);
+  }
+
+  .fnd__tiles li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .fnd__tiles .fnd__box {
+    margin-bottom: var(--spacing-2);
+  }
+
+  .fnd__semantic {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4) 0;
+  }
+
+  .fnd__semantic--specimen {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .fnd__motion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__motion-row {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr) 3rem;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .fnd__motion-track {
+    position: relative;
+    height: var(--spacing-8);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+  }
+
+  .fnd__motion-knob {
+    position: absolute;
+    top: var(--spacing-1);
+    width: var(--spacing-6);
+    height: var(--spacing-5);
+    background: var(--color-theme-500);
+    border-radius: var(--radius-sm);
+  }
+
+  .fnd__stack {
+    position: relative;
+    isolation: isolate;
+    height: 15rem;
+  }
+
+  .fnd__layer {
+    position: absolute;
+    left: calc(var(--offset) * var(--spacing-12));
+    /* Deep enough that each layer's label stays clear of the one above it. */
+    top: calc(var(--offset) * var(--spacing-10));
+    width: 13rem;
+    height: var(--spacing-20);
+    box-sizing: border-box;
+    padding: var(--spacing-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (max-width: 40rem) {
+    .fnd__row,
+    .fnd__motion-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    .fnd__row > :nth-child(3),
+    .fnd__motion-row > .fnd__motion-track {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .fnd__layer {
+      left: calc(var(--offset) * var(--spacing-5));
+    }
+  }
+</style>

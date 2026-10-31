@@ -1,0 +1,40 @@
+---
+import { Text } from '@yasmro/schatten'
+import { elevationPage as e } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import Rules from './Rules.astro'
+import SemanticSteps from './SemanticSteps.astro'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const semantic = new Set(e.semantic.map(({ name }) => name))
+const scale = listTokens().shadow.filter(({ name }) => !semantic.has(name))
+---
+
+<Section title={e.scaleTitle[locale]} lead={e.scaleLead[locale]}>
+  <ul class="fnd__tiles">
+    {
+      scale.map(({ name }) => (
+        <li>
+          <span class="fnd__box" style={`box-shadow:var(${name})`} />
+          <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<Section title={e.semanticTitle[locale]} lead={e.semanticLead[locale]}>
+  <SemanticSteps locale={locale} steps={e.semantic} property="box-shadow" />
+</Section>
+
+<Section title={e.overTitle[locale]}>
+  <Rules rules={e.overRules.map((rule) => rule[locale])} />
+</Section>
+
+<Section title={e.darkTitle[locale]} lead={e.darkLead[locale]} />

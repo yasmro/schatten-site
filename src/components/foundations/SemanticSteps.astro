@@ -1,0 +1,34 @@
+---
+// Semantic tokens of a scale: a specimen, the use, and whether a component
+// applies the token yet.
+import { Badge, Text } from '@yasmro/schatten'
+import type { SemanticStep } from '../../i18n/foundations'
+import { statusLabels } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+
+interface Props {
+  locale: Locale
+  steps: readonly SemanticStep[]
+  /** CSS property the token paints on the specimen. Omit for no specimen. */
+  property?: 'border-radius' | 'box-shadow'
+}
+
+const { locale, steps, property } = Astro.props
+---
+
+<ul class="fnd__list">
+  {
+    steps.map(({ name, applied, use }) => (
+      <li class:list={['fnd__semantic', { 'fnd__semantic--specimen': property }]}>
+        {property && <span class="fnd__box" style={`${property}:var(${name})`} />}
+        <div class="fnd__text">
+          <Text as="span" size="sm"><code>{name}</code></Text>
+          <Text as="span" size="sm" color="muted">{use[locale]}</Text>
+        </div>
+        <Badge variant={applied ? 'success' : 'warning'} size="sm">
+          {statusLabels[applied ? 'applied' : 'defined'][locale]}
+        </Badge>
+      </li>
+    ))
+  }
+</ul>

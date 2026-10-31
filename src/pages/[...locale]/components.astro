@@ -1,21 +1,31 @@
 ---
-// Components index. The CATALOG stays in Storybook (it is not duplicated
-// here) — this page is an index into it, plus one live React island proving
-// the second delivery layer on the site itself.
+// Components index: every component grouped by category, each linking to its
+// own page (/components/[slug]). Storybook is linked as the place to verify
+// and test behaviour, plus one live React island proving the second delivery
+// layer on the site itself.
 //
 // The list is generated at build time from the installed `@yasmro/schatten`
 // package: every lv1 that ships a per-component CSS subpath. The site has no
 // view of the library source, so it can only list what is published.
 //
-// Built from Schatten's React components (Text / Badge / Card / Button),
+// Built from Schatten's React components (Text / Badge / Card / Callout),
 // rendered to static HTML at build time; only <LiveDemo> hydrates. See CLAUDE.md.
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Text } from '@yasmro/schatten'
-import LinkButton from '../../components/LinkButton'
+import {
+  Badge,
+  Callout,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Text,
+} from '@yasmro/schatten'
 import LiveDemo from '../../components/LiveDemo'
 import Base from '../../layouts/Base.astro'
-import { defaultLocale, type Locale, locales, ui } from '../../i18n/ui'
+import { groupByCategory, guides } from '../../i18n/guides'
+import { defaultLocale, type Locale, localePath, locales, ui } from '../../i18n/ui'
 import { listComponents } from '../../lib/library.mjs'
-import { STORYBOOK_ORIGIN, storybookDocsUrl } from '../../lib/storybook-links.mjs'
+import { STORYBOOK_ORIGIN } from '../../lib/storybook-links.mjs'
 
 export function getStaticPaths() {
   return locales.map((locale) => ({
@@ -27,26 +37,50 @@ export function getStaticPaths() {
 const { locale } = Astro.props as { locale: Locale }
 const t = ui[locale].components
 
-const components = (await listComponents()).map(({ name }) => ({
-  name,
-  // Derivation + drift gate live in src/lib/storybook-links.mjs
-  // (scripts/check-storybook-links.mjs checks these against the deployed Storybook).
-  href: storybookDocsUrl(name),
-}))
+const components = await listComponents()
+
+// [slug].astro fails the build on a component with no guide, so `guides[slug]`
+// is defined here for everything the package ships.
+const categories = groupByCategory(components)
 ---
 
 <Base locale={locale} description={t.metaDescription} title={t.pageTitle} page="components">
   <main class="page">
     <section class="intro">
       <Text as="h1" variant="heading" size="2xl" family="serif">{t.title}</Text>
-      <Text
-        as="p"
-        size="lg"
-        color="muted"
-        leading="relaxed"
-        className="intro__lead"
-        set:html={t.lead.replace('%STORYBOOK%', STORYBOOK_ORIGIN)}
-      />
+      <Text as="p" size="lg" color="muted" leading="relaxed" className="intro__lead">{t.lead}</Text>
+      <Text as="p" size="sm" color="muted" leading="relaxed" className="intro__lead" set:html={t.listLead} />
+    </section>
+
+    {
+      categories.map((category) => (
+        <section class="list">
+          <div class="list__heading">
+            <Text as="h2" variant="heading" size="lg" family="serif">{t.categories[category.id]}</Text>
+            <Badge variant="neutral" appearance="outline" size="sm">{category.items.length}</Badge>
+          </div>
+          <ul class="list__grid">
+            {category.items.map(({ slug, name }) => (
+              <li>
+                <a class="list__link" href={`${localePath(locale)}components/${slug}/`}>
+                  <Card className="list__card">
+                    <CardHeader>
+                      <CardTitle>{name}</CardTitle>
+                      <CardDescription>{guides[slug].summary[locale]}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <section>
+      <Callout variant="info" appearance="subtle" role="note" title={t.storybookTitle}>
+        <Fragment slot="description" set:html={t.storybookNote.replace('%STORYBOOK%', STORYBOOK_ORIGIN)} />
+      </Callout>
     </section>
 
     <section>
@@ -67,25 +101,6 @@ const components = (await listComponents()).map(({ name }) => ({
         </CardContent>
       </Card>
     </section>
-
-    <section class="list">
-      <div class="list__heading">
-        <Text as="h2" variant="heading" size="lg" family="serif">{t.listTitle}</Text>
-        <Badge variant="neutral" appearance="outline" size="sm">{components.length}</Badge>
-      </div>
-      <Text as="p" size="sm" color="muted" leading="relaxed" className="list__lead" set:html={t.listLead} />
-      <ul class="list__grid">
-        {
-          components.map((c) => (
-            <li>
-              <LinkButton variant="secondary" size="md" href={c.href} className="list__item">
-                {c.name}
-              </LinkButton>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
   </main>
 </Base>
 
@@ -105,12 +120,7 @@ const components = (await listComponents()).map(({ name }) => ({
     display: flex;
     align-items: center;
     gap: var(--spacing-3);
-    margin-bottom: var(--spacing-3);
-  }
-
-  .list__lead {
-    max-width: 44rem;
-    margin-bottom: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
   }
 
   .list__grid {
@@ -118,14 +128,23 @@ const components = (await listComponents()).map(({ name }) => ({
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: var(--spacing-2);
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: var(--spacing-3);
   }
 
-  /* A secondary Button stretched to its grid cell; the look is the Button's. */
-  .list__item {
-    width: 100%;
-    justify-content: flex-start;
+  .list__link {
+    display: block;
+    height: 100%;
+    color: inherit;
     text-decoration: none;
+  }
+
+  .list__card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .list__link:hover .list__card {
+    border-color: var(--color-border-strong);
   }
 </style>

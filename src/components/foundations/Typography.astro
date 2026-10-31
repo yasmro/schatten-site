@@ -1,0 +1,79 @@
+---
+// Typography page. Role samples are real `<Text>`; primitives paint through
+// `var(--token)`.
+import { Text } from '@yasmro/schatten'
+import { typeFaces, typeRoles, typographyPage as t } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listTokens } from '../../lib/library.mjs'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const tokens = listTokens()
+---
+
+<Section title={t.familiesTitle[locale]}>
+  <ul class="fnd__list">
+    {
+      typeFaces.map(({ token, name, note }) => (
+        <li class="fnd__face">
+          <span class="fnd__specimen" style={`font-family:var(${token})`}>{t.sampleLatin}</span>
+          {token !== '--font-mono' && (
+            <span class="fnd__specimen" style={`font-family:var(${token})`}>{t.sampleJa}</span>
+          )}
+          <Text as="span" size="sm"><code>{token}</code> · {name}</Text>
+          <Text as="span" size="sm" color="muted" leading="relaxed" set:html={note[locale]} />
+        </li>
+      ))
+    }
+  </ul>
+  <Section title={t.sizeAdjustTitle[locale]} lead={t.sizeAdjustLead[locale]} level="h3" />
+</Section>
+
+<Section title={t.scaleTitle[locale]}>
+  {
+    typeRoles.map(({ title, note, variant, sizes }) => (
+      <Section title={title[locale]} lead={note[locale]} level="h3">
+        <ul class="fnd__list">
+          {sizes.map(({ size, use }) => (
+            <li class="fnd__role">
+              <Text as="span" variant={variant} size={size}>{use[locale]}</Text>
+              <Text as="span" size="xs" color="muted"><code>{variant}-{size}</code></Text>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+</Section>
+
+<Section title={t.primitivesTitle[locale]} lead={t.primitivesLead[locale]}>
+  <Section title={t.sizesTitle[locale]} level="h3">
+    <ul class="fnd__list">
+      {
+        tokens.text.map(({ name, value }) => (
+          <li class="fnd__row">
+            <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+            <Text as="span" size="xs" color="subtle">{value}</Text>
+            <span class="fnd__specimen" style={`font-size:var(${name})`}>{t.sample[locale]}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+  <Section title={t.leadingTitle[locale]} level="h3">
+    <ul class="fnd__list">
+      {
+        tokens.leading.map(({ name, value }) => (
+          <li class="fnd__row">
+            <Text as="span" size="xs" color="muted"><code>{name}</code></Text>
+            <Text as="span" size="xs" color="subtle">{value}</Text>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+</Section>

@@ -1,0 +1,70 @@
+---
+// Primitive colors: what a color is. Scales first, because most ink tokens are
+// aliases of their rungs.
+import { Text } from '@yasmro/schatten'
+import {
+  colorPage as c,
+  colorScales,
+  inkAndPaper,
+  inkAndPaperInverted,
+} from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import { listColorScales, listPrimitiveAliases } from '../../lib/library.mjs'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+
+const scales = listColorScales()
+const aliases = listPrimitiveAliases()
+const unknownScales = Object.keys(scales).filter((name) => !colorScales.some((s) => s.name === name))
+if (unknownScales.length > 0) {
+  throw new Error(
+    `no entry for colour scales: ${unknownScales.join(', ')} — update colorScales in src/i18n/foundations.ts`,
+  )
+}
+---
+
+<Section title={c.scalesTitle[locale]} level="h3">
+  {
+    colorScales.map(({ name, title, note }) => (
+      <Section title={title[locale]} lead={note?.[locale]} level="h4">
+        <ul class="fnd__scale">
+          {scales[name].map((step) => (
+            <li>
+              <span class="fnd__chip" style={`background:var(--${name}-${step})`} />
+              <Text as="span" size="xs" color="muted">{step}</Text>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    ))
+  }
+</Section>
+
+{
+  [
+    { title: c.inkTitle[locale], lead: c.inkLead[locale], tokens: inkAndPaper },
+    { title: c.inkInvertedTitle[locale], lead: c.inkInvertedLead[locale], tokens: inkAndPaperInverted },
+  ].map(({ title, lead, tokens }) => (
+    <Section title={title} lead={lead} level="h3">
+      <ul class="fnd__list">
+        {tokens.map(({ name, role }) => (
+          <li class="fnd__color">
+            <span class="fnd__swatch" style={`background:var(--${name})`} />
+            <div class="fnd__text">
+              <Text as="span" size="sm"><code>--{name}</code></Text>
+              <Text as="span" size="xs" color="muted">{role[locale]}</Text>
+              {aliases[`--${name}`] && (
+                <Text as="span" size="xs" color="subtle">→ <code>{aliases[`--${name}`]}</code></Text>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  ))
+}

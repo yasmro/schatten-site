@@ -1,0 +1,29 @@
+---
+// A titled block of a foundations page. `lead` may carry inline <code>.
+import { Text } from '@yasmro/schatten'
+
+interface Props {
+  title: string
+  lead?: string
+  /** `h2` for a page section, `h3` and `h4` inside one. */
+  level?: 'h2' | 'h3' | 'h4'
+  /** Fragment target for in-page links. */
+  id?: string
+}
+
+const { title, lead, level = 'h2', id } = Astro.props
+---
+
+<section class="fnd__section" id={id}>
+  {
+    level === 'h2' ? (
+      <Text as="h2" variant="heading" size="xl" family="serif">{title}</Text>
+    ) : level === 'h3' ? (
+      <Text as="h3" variant="heading" size="lg">{title}</Text>
+    ) : (
+      <Text as="h4" variant="heading" size="md">{title}</Text>
+    )
+  }
+  {lead && <Text as="p" color="muted" leading="relaxed" className="fnd__measure" set:html={lead} />}
+  <slot />
+</section>
