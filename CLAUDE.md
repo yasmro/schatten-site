@@ -13,7 +13,7 @@ In order of preference:
    `Card*` / `Callout` / `Separator` / `Icon` / … imported from `@yasmro/schatten` and
    used directly in `.astro` templates. Astro renders them to HTML at build time; add
    a `client:` directive **only** where the component must be interactive in the
-   browser (today: `LiveDemo`, `ComponentDemo`, `MotionDemo`). Typography goes through `<Text as=… variant=… size=…>`
+   browser (today: `LiveDemo`, `ComponentDemo`, `MotionDemo`, `CopyToast`). Typography goes through `<Text as=… variant=… size=…>`
    rather than a styled `<h2>` / `<p>`.
 2. **Raw `.st-*` markup only where the markup itself is the subject** — the
    "Vanilla HTML" pane of the landing's proof block. Nowhere else.

@@ -435,6 +435,7 @@ export const colorPage = {
   combinationsTitle: l('Combinations', '組み合わせ'),
   copyLabel: l('Copy {name}', '{name} をコピー'),
   copiedLabel: l('Copied', 'コピーしました'),
+  copyFailedLabel: l('Could not copy', 'コピーできませんでした'),
   light: l('Light', 'ライト'),
   dark: l('Dark', 'ダーク'),
   stateTitle: l('How state tokens work', '状態トークンの仕組み'),

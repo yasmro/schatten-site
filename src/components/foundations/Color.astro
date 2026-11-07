@@ -12,6 +12,7 @@ import {
   listComponents,
   listTokens,
 } from '../../lib/library.mjs'
+import CopyToast from '../CopyToast'
 import ColorCombinations from './ColorCombinations.astro'
 import ColorPrimitive from './ColorPrimitive.astro'
 import ColorSemantic from './ColorSemantic.astro'
@@ -56,7 +57,9 @@ const sections = [
 ]
 ---
 
-<div class="fnd__section" data-copied-label={c.copiedLabel[locale]}>
+<CopyToast client:load copiedLabel={c.copiedLabel[locale]} failedLabel={c.copyFailedLabel[locale]} />
+
+<div class="fnd__section">
   <div class="fnd__flows">
     {
       paths.map((path) => (
@@ -78,7 +81,6 @@ const sections = [
     {fill(c.flowCaption[locale])}
   </Text>
   <Text as="p" size="xs" color="muted" leading="relaxed" className="fnd__measure" set:html={c.approxNote[locale]} />
-  <span class="fnd__sr" aria-live="polite" data-copy-status></span>
 </div>
 
 {
@@ -89,23 +91,3 @@ const sections = [
   ))
 }
 
-<script>
-  // Copy a swatch's CSS custom property, then say so in place of its name for
-  // a moment and in the live region for screen readers.
-  document.addEventListener('click', async (event) => {
-    const button = (event.target as Element).closest<HTMLButtonElement>('[data-copy]')
-    if (!button?.dataset.copy) return
-    await navigator.clipboard.writeText(button.dataset.copy)
-    const label = document.querySelector<HTMLElement>('[data-copied-label]')?.dataset.copiedLabel ?? ''
-    const status = document.querySelector('[data-copy-status]')
-    if (status) status.textContent = `${label}: ${button.dataset.copy}`
-    const name = button.querySelector<HTMLElement>('[data-copy-name]')
-    if (!name || name.dataset.original) return
-    name.dataset.original = name.textContent ?? ''
-    name.textContent = label
-    window.setTimeout(() => {
-      name.textContent = name.dataset.original ?? ''
-      delete name.dataset.original
-    }, 1200)
-  })
-</script>
