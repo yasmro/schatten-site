@@ -1,0 +1,23 @@
+---
+// One color swatch: a chip painted through `var()` (two halves when it shows
+// light and dark side by side), the name, and lines such as `→ sumi-900 · #0E1216`.
+import { Text } from '@yasmro/schatten'
+
+interface Props {
+  name: string
+  /** One CSS color, or `[light, dark]` for a two-mode swatch. */
+  paint: string | readonly [string, string]
+  lines?: readonly string[]
+}
+
+const { name, paint, lines = [] } = Astro.props
+const halves = typeof paint === 'string' ? [paint] : paint
+---
+
+<li class="fnd__tile">
+  <span class="fnd__tile-chip">
+    {halves.map((color) => <span style={`background:${color}`} />)}
+  </span>
+  <Text as="span" size="xs"><code>{name}</code></Text>
+  {lines.map((line) => <Text as="span" size="xs" color="muted">{line}</Text>)}
+</li>

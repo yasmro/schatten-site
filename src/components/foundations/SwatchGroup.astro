@@ -1,0 +1,23 @@
+---
+// A titled row of swatches: the title, a short note on the same line, then the grid.
+import { Text } from '@yasmro/schatten'
+
+interface Props {
+  title: string
+  note?: string
+  /** Wider cells for swatches with long labels. */
+  wide?: boolean
+}
+
+const { title, note, wide = false } = Astro.props
+---
+
+<div class="fnd__group">
+  <div class="fnd__group-head">
+    <Text as="h4" variant="heading" size="sm">{title}</Text>
+    {note && <Text as="span" size="xs" color="muted" set:html={note} />}
+  </div>
+  <ul class:list={['fnd__tile-grid', { 'fnd__tile-grid--wide': wide }]}>
+    <slot />
+  </ul>
+</div>

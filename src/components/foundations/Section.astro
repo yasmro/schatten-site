@@ -9,12 +9,15 @@ interface Props {
   level?: 'h2' | 'h3' | 'h4'
   /** Fragment target for in-page links. */
   id?: string
+  /** Small label above the title, such as a section number. */
+  eyebrow?: string
 }
 
-const { title, lead, level = 'h2', id } = Astro.props
+const { title, lead, level = 'h2', id, eyebrow } = Astro.props
 ---
 
 <section class="fnd__section" id={id}>
+  {eyebrow && <Text as="span" size="sm" color="subtle">{eyebrow}</Text>}
   {
     level === 'h2' ? (
       <Text as="h2" variant="heading" size="xl" family="serif">{title}</Text>
