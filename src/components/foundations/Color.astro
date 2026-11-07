@@ -1,11 +1,22 @@
 ---
-// Color page: the two tiers, one after the other, so a semantic color can be
-// read against the primitive it references.
+// Color page: Primitive → Theme → Semantic, then how semantic colors combine.
+// The diagram shows the two real paths a color takes; its counts and the
+// components named in it are read from the package, so they cannot drift.
+import { Icon, Text } from '@yasmro/schatten'
+import { ArrowRight } from 'lucide-react'
 import { colorPage as c } from '../../i18n/foundations'
 import type { Locale } from '../../i18n/ui'
-import LinkButton from '../LinkButton'
+import {
+  componentPrimitiveRefs,
+  listColorReferences,
+  listComponents,
+  listTokens,
+} from '../../lib/library.mjs'
+import CopyToast from '../CopyToast'
+import ColorCombinations from './ColorCombinations.astro'
 import ColorPrimitive from './ColorPrimitive.astro'
 import ColorSemantic from './ColorSemantic.astro'
+import ColorTheme from './ColorTheme.astro'
 import Section from './Section.astro'
 
 interface Props {
@@ -13,17 +24,70 @@ interface Props {
 }
 
 const { locale } = Astro.props
+
+const references = Object.entries(listColorReferences()).filter(
+  ([name]) => !name.startsWith('--color-theme-'),
+)
+const viaTheme = references.filter(([, { light, dark }]) =>
+  [light, dark].some((target) => target.startsWith('--color-theme-')),
+)
+const ramp = listTokens()
+  .color.map(({ name }) => name)
+  .filter((name) => name.startsWith('--color-theme-'))
+const names = new Map((await listComponents()).map(({ slug, name }) => [slug, name]))
+const themeUsers = [
+  ...new Set(componentPrimitiveRefs(ramp).map((ref) => names.get(ref.split('.css')[0]) ?? ref)),
+].join(', ')
+const fill = (text: string) =>
+  text
+    .replaceAll('{total}', String(references.length))
+    .replaceAll('{direct}', String(references.length - viaTheme.length))
+    .replaceAll('{solid}', String(viaTheme.length))
+    .replaceAll('{components}', themeUsers)
+
+const paths = [
+  [c.flowPrimitive, c.flowSemantic, c.flowComponents],
+  [c.flowPrimitive, c.flowTheme, c.flowSolid],
+]
+const sections = [
+  { id: 'primitive', title: c.primitiveTitle, lead: c.primitiveLead, Content: ColorPrimitive },
+  { id: 'theme', title: c.themeTitle, lead: c.themeLead, Content: ColorTheme },
+  { id: 'semantic', title: c.semanticTitle, lead: c.semanticLead, Content: ColorSemantic },
+  { id: 'combinations', title: c.combinationsTitle, lead: c.treatmentsLead, Content: ColorCombinations },
+]
 ---
 
-<nav class="fnd__jump">
-  <LinkButton variant="secondary" size="sm" href="#primitive">{c.primitiveTitle[locale]}</LinkButton>
-  <LinkButton variant="secondary" size="sm" href="#semantic">{c.semanticTitle[locale]}</LinkButton>
-</nav>
+<CopyToast client:load copiedLabel={c.copiedLabel[locale]} failedLabel={c.copyFailedLabel[locale]} />
 
-<Section title={c.primitiveTitle[locale]} lead={c.primitiveLead[locale]} id="primitive">
-  <ColorPrimitive locale={locale} />
-</Section>
+<div class="fnd__section">
+  <div class="fnd__flows">
+    {
+      paths.map((path) => (
+        <ol class="fnd__flow">
+          {path.map(({ title, note }, i) => (
+            <li>
+              <span class="fnd__flow-box">
+                <Text as="span" variant="label" size="sm">{title[locale]}</Text>
+                <Text as="span" size="xs" color="muted">{fill(note[locale])}</Text>
+              </span>
+              {i < path.length - 1 && <Icon icon={ArrowRight} size="sm" color="subtle" />}
+            </li>
+          ))}
+        </ol>
+      ))
+    }
+  </div>
+  <Text as="p" size="sm" color="muted" leading="relaxed" className="fnd__measure">
+    {fill(c.flowCaption[locale])}
+  </Text>
+  <Text as="p" size="xs" color="muted" leading="relaxed" className="fnd__measure" set:html={c.approxNote[locale]} />
+</div>
 
-<Section title={c.semanticTitle[locale]} lead={c.semanticLead[locale]} id="semantic">
-  <ColorSemantic locale={locale} />
-</Section>
+{
+  sections.map(({ id, title, lead, Content }) => (
+    <Section title={title[locale]} lead={fill(lead[locale])} id={id}>
+      <Content locale={locale} />
+    </Section>
+  ))
+}
+

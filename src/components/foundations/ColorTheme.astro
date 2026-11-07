@@ -1,0 +1,60 @@
+---
+// Theme: the `--color-theme-*` ramp between Primitive and Semantic, and the
+// seasonal themes that swap it.
+import { Text } from '@yasmro/schatten'
+import { colorPage as c } from '../../i18n/foundations'
+import { type Locale, ui } from '../../i18n/ui'
+import { hexOf, short } from '../../lib/color-labels.mjs'
+import { listColorReferences, listSeasons, listTokens } from '../../lib/library.mjs'
+import Section from './Section.astro'
+import Swatch from './Swatch.astro'
+import SwatchGroup from './SwatchGroup.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const copy = (token: string) => c.copyLabel[locale].replace('{name}', token)
+const seasonNames = ui[locale].brand.seasonNames
+const references = listColorReferences()
+const ramp = listTokens()
+  .color.map(({ name }) => name)
+  .filter((name) => name.startsWith('--color-theme-'))
+  .sort((a, b) => Number(a.split('-').pop()) - Number(b.split('-').pop()))
+const seasons = listSeasons()
+---
+
+<SwatchGroup title="color-theme">
+  {
+    ramp.map((name) => (
+      <Swatch
+        token={name}
+        copyLabel={copy(name)}
+        paint={`var(${name})`}
+        lines={[`→ ${short(references[name]?.light ?? name)} · ${hexOf(name)}`]}
+      />
+    ))
+  }
+</SwatchGroup>
+
+<Section title={c.seasonsTitle[locale]} lead={c.seasonsLead[locale]} level="h3">
+  {
+    seasons.map(({ id, steps }, i) => (
+      <div class="fnd__group">
+        <div class="fnd__group-head">
+          <Text as="h4" variant="heading" size="sm">{seasonNames[i]}</Text>
+          <Text as="span" size="xs" color="muted"><code>{id}</code></Text>
+        </div>
+        <ul class="fnd__scale">
+          {steps.map(({ step, value }) => (
+            <li>
+              <span class="fnd__chip" style={`background:${value}`} />
+              <Text as="span" size="xs" color="muted">{step}</Text>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</Section>

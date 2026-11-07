@@ -1,0 +1,30 @@
+---
+// One color swatch: a chip painted through `var()` (two halves when it shows
+// light and dark side by side), the name, and lines such as `→ sumi-900 · #0E1216`.
+// The chip and name are a button that copies the CSS custom property; the
+// handler and the confirming Toast live in CopyToast.tsx.
+import { Text } from '@yasmro/schatten'
+
+interface Props {
+  /** CSS custom property, e.g. `--sumi-500`. Shown without the leading `--`. */
+  token: string
+  /** One CSS color, or `[light, dark]` for a two-mode swatch. */
+  paint: string | readonly [string, string]
+  lines?: readonly string[]
+  /** Accessible name of the copy button. */
+  copyLabel: string
+}
+
+const { token, paint, lines = [], copyLabel } = Astro.props
+const halves = typeof paint === 'string' ? [paint] : paint
+---
+
+<li class="fnd__tile">
+  <button type="button" class="fnd__tile-copy" data-copy={token} aria-label={copyLabel} title={copyLabel}>
+    <span class="fnd__tile-chip">
+      {halves.map((color) => <span style={`background:${color}`} />)}
+    </span>
+    <Text as="span" size="xs"><code>{token.replace(/^--/, '')}</code></Text>
+  </button>
+  {lines.map((line) => <Text as="span" size="xs" color="muted">{line}</Text>)}
+</li>

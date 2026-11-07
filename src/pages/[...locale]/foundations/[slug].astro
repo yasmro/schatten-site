@@ -59,7 +59,7 @@ const navGroups = [
 >
   <div class="docs">
     <SideNav label={ui[locale].common.navFoundations} groups={navGroups} />
-    <main class="page fnd">
+    <main class:list={['page', 'fnd', { 'fnd--wide': slug === 'color' }]}>
       <section class="fnd__section">
         <LinkButton variant="tertiary" size="sm" href={indexHref} className="docs__back">
           {foundationsIndex.back[locale]}
@@ -95,15 +95,119 @@ const navGroups = [
     scroll-margin-top: var(--spacing-8);
   }
 
-  .fnd__jump {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-2);
-    margin-top: calc(var(--spacing-8) * -1);
+
+
+  /* The Color page shows rows of eleven swatches; give them the width. */
+  .page.fnd--wide {
+    max-width: 72rem;
   }
 
-  .fnd__jump a {
-    text-decoration: none;
+  .fnd__flows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+
+  /* The chip and name of a swatch, as a button that copies the token name. */
+  .fnd__tile-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: copy;
+  }
+
+  .fnd__tile-copy:hover .fnd__tile-chip {
+    border-color: var(--color-border-strong);
+  }
+
+  .fnd__tile-copy:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__flow {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .fnd__flow li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .fnd__flow-box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .fnd__group + .fnd__group {
+    margin-top: var(--spacing-6);
+  }
+
+  .fnd__group-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--spacing-1) var(--spacing-3);
+  }
+
+  .fnd__tile-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+    gap: var(--spacing-4) var(--spacing-2);
+  }
+
+  .fnd__tile-grid--wide {
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  }
+
+  .fnd__tile {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    overflow-wrap: anywhere;
+  }
+
+  .fnd__tile-chip {
+    display: flex;
+    height: var(--spacing-12);
+    margin-bottom: var(--spacing-1);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-surface);
+  }
+
+  .fnd__tile-chip > span {
+    flex: 1;
   }
 
   .fnd__measure {
@@ -145,33 +249,9 @@ const navGroups = [
     gap: var(--spacing-1);
   }
 
-  .fnd__color {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-4);
-    padding: var(--spacing-3) 0;
-  }
 
-  .fnd__swatches {
-    flex: none;
-    display: flex;
-    gap: var(--spacing-1);
-  }
 
-  .fnd__refs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--spacing-4);
-  }
 
-  .fnd__swatch {
-    flex: none;
-    width: var(--spacing-10);
-    height: var(--spacing-10);
-    box-sizing: border-box;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-surface);
-  }
 
   .fnd__samples {
     display: flex;
@@ -208,7 +288,7 @@ const navGroups = [
 
   .fnd__chip {
     width: 100%;
-    aspect-ratio: 1;
+    height: var(--spacing-8);
     box-sizing: border-box;
     border-radius: var(--radius-surface);
   }

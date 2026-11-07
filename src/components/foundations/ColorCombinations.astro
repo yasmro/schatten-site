@@ -1,0 +1,58 @@
+---
+// How semantic colors are used together: the non-interactive pair, and the
+// filled and subtle treatment of each state.
+import { colorPage as c, colorStates } from '../../i18n/foundations'
+import type { Locale } from '../../i18n/ui'
+import Section from './Section.astro'
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+---
+
+<Section title={c.nonInteractiveTitle[locale]} lead={c.nonInteractiveLead[locale]} level="h3">
+  <div class="fnd__samples">
+    <div
+      class="fnd__sample"
+      style="background:var(--color-surface-disabled);color:var(--color-foreground-disabled);border-color:var(--color-border-disabled)"
+    >
+      <code>disabled</code><span>{c.sample[locale]}</span>
+    </div>
+    <div
+      class="fnd__sample"
+      style="background:var(--color-surface-readonly);color:var(--color-foreground);border-color:var(--color-border-readonly)"
+    >
+      <code>readOnly</code><span>{c.sample[locale]}</span>
+    </div>
+  </div>
+</Section>
+<Section title={c.filledTitle[locale]} lead={c.filledLead[locale]} level="h3">
+  <div class="fnd__samples">
+    {
+      colorStates.map((state) => (
+        <div
+          class="fnd__sample"
+          style={`background:var(--color-${state});color:var(--color-${state}-foreground);border-color:transparent`}
+        >
+          <code>{state}</code><span>{c.sample[locale]}</span>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+<Section title={c.subtleTitle[locale]} lead={c.subtleLead[locale]} level="h3">
+  <div class="fnd__samples">
+    {
+      colorStates.map((state) => (
+        <div
+          class="fnd__sample"
+          style={`background:var(--color-${state}-subtle);color:var(--color-${state}-emphasis)`}
+        >
+          <code>{state}</code><span>{c.sample[locale]}</span>
+        </div>
+      ))
+    }
+  </div>
+</Section>

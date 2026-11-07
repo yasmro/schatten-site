@@ -17,12 +17,12 @@ export const foundationPages = [
     slug: 'color',
     title: l('Color', '色'),
     summary: l(
-      'Primitive colors say what a color is; semantic colors say what it is for.',
-      'プリミティブは「何色か」を、セマンティックは「何に使うか」を表す。',
+      'Primitive, Theme and Semantic: three layers, and how colors flow through them.',
+      'Primitive、Theme、Semantic の 3 層と、色の流れ。',
     ),
     lead: l(
-      'Colors are inspired by Japanese calligraphy: ink on paper. They come in two tiers: primitives say what a color is, and semantic colors say what it is for. Components use the semantic tier.',
-      '色の着想は書、つまり紙に墨である。色は 2 層に分かれていて、プリミティブは「何色か」を、セマンティックは「何に使うか」を表す。コンポーネントはセマンティックの層を使う。',
+      'Colors come in three layers. Primitive holds the raw values, Theme holds the ramp a seasonal theme swaps, and Semantic names each color by its use. Components use Semantic and Theme, never Primitive.',
+      '色は 3 層でできている。Primitive は生の値を、Theme は季節テーマで差し替わる階調を持ち、Semantic は用途で色に名前を付ける。コンポーネントは Semantic と Theme を使い、Primitive は直接使わない。',
     ),
   },
   {
@@ -398,17 +398,44 @@ export const colorScales: readonly { name: string; title: Localized; note?: Loca
 ]
 
 export const colorPage = {
+  flowPrimitive: { title: l('Primitive', 'Primitive'), note: l('Raw values', '生の値') },
+  flowTheme: { title: l('Theme', 'Theme'), note: l('Ramp a season swaps', '季節で差し替わる階調') },
+  flowSemantic: { title: l('Semantic', 'Semantic'), note: l('Named by use', '用途で名付けた色') },
+  flowSolid: {
+    title: l('Semantic (solid)', 'Semantic の solid 系'),
+    note: l('and {components}', 'と {components}'),
+  },
+  flowComponents: {
+    title: l('Components', 'コンポーネント'),
+    note: l('Fills, borders, text', '塗り・線・文字'),
+  },
+  flowCaption: l(
+    '{direct} of the {total} semantic colors point at a Primitive directly. Only the {solid} solid colors go through Theme, and among components only {components} uses Theme directly.',
+    'Semantic の {total} 色のうち {direct} 色は、Primitive を直接参照する。Theme を経由するのは solid 系の {solid} 色だけで、コンポーネントで Theme を直接使うのは {components} だけである。',
+  ),
   primitiveTitle: l('Primitive', 'Primitive'),
   primitiveLead: l(
-    'Primitives carry no use, and they do not change between light and dark mode.',
-    'プリミティブは用途を持たず、ライトとダークで値も変わらない。',
+    'Raw values. They carry no use and do not change between light and dark mode. Theme and Semantic point at these.',
+    '生の値。用途を持たず、ライトとダークで値も変わらない。Theme と Semantic がこれを参照する。',
+  ),
+  themeTitle: l('Theme', 'Theme'),
+  themeLead: l(
+    'The ramp the solid colors and {components} use. With no seasonal theme it points at alabaster; a seasonal theme swaps all eleven steps at once.',
+    'solid 系と {components} が使う階調。季節テーマがなければ alabaster を指し、季節テーマを適用すると 11 段がまとめて差し替わる。',
   ),
   semanticTitle: l('Semantic', 'Semantic'),
   semanticLead: l(
-    'Each semantic color points at a primitive. The target changes with the mode, which is how components follow light and dark with no code of their own. Each row shows both modes, whichever you are viewing.',
-    'セマンティックカラーはそれぞれプリミティブを参照している。参照先がモードで切り替わるので、コンポーネントはコードなしでライト・ダークに追従する。各行には、表示中のモードに関係なく両方のモードを示す。',
+    'Each color is named by its use and points at a Primitive or Theme step. The target changes with the mode. In each swatch, the left half is light mode and the right half is dark mode.',
+    '用途で名付けた色で、それぞれ Primitive か Theme の段を参照する。参照先はモードで切り替わる。見本の左半分がライト、右半分がダーク。',
   ),
-  tokensTitle: l('Tokens by use', '用途別のトークン'),
+  approxNote: l(
+    'Click a swatch to copy its CSS custom property, such as <code>--sumi-500</code>. Names under the swatches leave out the leading <code>--</code>. Hex values are converted from OKLCH; a value marked ≈ is outside sRGB, so its hex is approximate.',
+    '見本をクリックすると、<code>--sumi-500</code> のような CSS 変数名をコピーできる。見本の下の名前は、先頭の <code>--</code> を省いて示す。HEX は OKLCH から変換した値で、≈ の付いた値は sRGB の範囲外にあるため近似値になる。',
+  ),
+  combinationsTitle: l('Combinations', '組み合わせ'),
+  copyLabel: l('Copy {name}', '{name} をコピー'),
+  copiedLabel: l('Copied', 'コピーしました'),
+  copyFailedLabel: l('Could not copy', 'コピーできませんでした'),
   light: l('Light', 'ライト'),
   dark: l('Dark', 'ダーク'),
   stateTitle: l('How state tokens work', '状態トークンの仕組み'),
@@ -448,11 +475,6 @@ export const colorPage = {
     'ライト用の墨と紙に対応する、ダークモード用の色。セマンティックカラーはダークモードでこれらに切り替わる。',
   ),
   scalesTitle: l('Color scales', '色の階調'),
-  themeTitle: l('Theme ramp', 'Theme 階調'),
-  themeNote: l(
-    'A layer between the two tiers: <code>--color-theme-*</code> is what the solid family references. With no seasonal theme it points at the alabaster scale, and a seasonal theme replaces the whole ramp.',
-    'ふたつの層の間にある階調である。solid 系は <code>--color-theme-*</code> を参照している。季節テーマがなければ alabaster を指し、季節テーマはこの階調全体を置き換える。',
-  ),
   seasonsTitle: l('Seasonal themes', '季節テーマ'),
   seasonsLead: l(
     'Eight themes based on the Japanese solar terms. Each replaces <code>--color-theme-*</code> through the <code>data-theme</code> attribute on the root element, with values like <code>season--spring-early</code>.',
