@@ -76,7 +76,7 @@ export const guides: Record<string, ComponentGuide> = {
           },
           {
             en: 'Always set <code>fallback</code> to short initials, so a failed image still identifies the person.',
-            ja: '<code>fallback</code> には短いイニシャルを必ず指定する。画像が読み込めなくても人物を識別できるようにするため。',
+            ja: '画像が読み込めなくても人物を識別できるよう、<code>fallback</code> には短いイニシャルを必ず指定する。',
           },
         ],
       },
@@ -150,7 +150,7 @@ export const guides: Record<string, ComponentGuide> = {
         rules: [
           {
             en: 'Use <code>destructive</code> for delete and remove actions, so they cannot be mistaken for a normal commit.',
-            ja: '削除や除去には <code>destructive</code> を使う。通常の確定操作と見分けられるようにするため。',
+            ja: '通常の確定操作と見分けられるよう、削除や除去には <code>destructive</code> を使う。',
           },
         ],
         example: 'button-destructive',
@@ -199,11 +199,11 @@ export const guides: Record<string, ComponentGuide> = {
         example: 'callout-tone',
       },
       {
-        title: { en: 'Actions and live messages', ja: '操作とライブメッセージ' },
+        title: { en: 'Actions and live messages', ja: '操作と動的なメッセージ' },
         rules: [
           {
             en: 'With <code>appearance="solid"</code>, put an <code>inverted</code> Button in <code>action</code> so it stays legible.',
-            ja: '<code>appearance="solid"</code> では、<code>action</code> に <code>inverted</code> の Button を置く。背景に対して読めるようにするため。',
+            ja: '<code>appearance="solid"</code> では、背景の上でも読めるよう、<code>action</code> に <code>inverted</code> の Button を置く。',
           },
           {
             en: 'A Callout that appears dynamically needs <code>role="status"</code>, or <code>role="alert"</code> when urgent.',
@@ -306,11 +306,11 @@ export const guides: Record<string, ComponentGuide> = {
           },
           {
             en: 'Use <code>subActionButton</code> for an alternative commit path such as “Save as draft”.',
-            ja: '<code>subActionButton</code> は「下書き保存」のような、もうひとつの確定経路に使う。',
+            ja: '<code>subActionButton</code> は「下書き保存」のような、別の確定操作に使う。',
           },
           {
             en: 'Set <code>isLoading</code> during async work. The Dialog then disables the other buttons and blocks dismissal.',
-            ja: '非同期処理の間は <code>isLoading</code> を設定する。他のボタンが無効になり、閉じる操作も止まる。',
+            ja: '非同期処理の間は <code>isLoading</code> を設定する。他のボタンが無効になり、閉じる操作もできなくなる。',
           },
         ],
       },
@@ -351,7 +351,7 @@ export const guides: Record<string, ComponentGuide> = {
           },
           {
             en: 'When an item’s children are not plain text, pass <code>textValue</code> so typeahead still matches.',
-            ja: '項目の中身がプレーンテキストでないときは <code>textValue</code> を渡す。先頭文字の検索が効くようにするため。',
+            ja: '項目の中身がプレーンテキストでないときは、キー入力で項目を探せるよう <code>textValue</code> を渡す。',
           },
         ],
       },
@@ -361,7 +361,7 @@ export const guides: Record<string, ComponentGuide> = {
     category: 'form',
     summary: {
       en: 'Wraps one form control with its label, description and error, and connects them for assistive technology.',
-      ja: 'フォームのコントロールひとつに、ラベル・説明・エラーを付け、支援技術からも関連付ける。',
+      ja: 'フォームのコントロールひとつにラベル・説明・エラーを付け、支援技術でも読み取れるよう関連付ける。',
     },
     usage: `import { Field, Input } from '@yasmro/schatten'
 
@@ -425,7 +425,7 @@ export const guides: Record<string, ComponentGuide> = {
           },
           {
             en: 'With <code>direction="row"</code>, set <code>wrap</code> so the fields still fit on narrow screens.',
-            ja: '<code>direction="row"</code> では <code>wrap</code> も指定する。狭い画面でも収まるようにするため。',
+            ja: '狭い画面でも収まるよう、<code>direction="row"</code> では <code>wrap</code> も指定する。',
           },
         ],
       },
@@ -705,7 +705,7 @@ import { Search } from 'lucide-react'
     category: 'display',
     summary: {
       en: 'A semantic table for tabular data. It provides the look only: no sorting, filtering or pagination.',
-      ja: '表形式のデータを示すセマンティックなテーブル。見た目のみを提供し、並べ替え・絞り込み・ページ送りは持たない。',
+      ja: '表形式のデータを示すセマンティックなテーブル。見た目のみを提供し、並べ替え・絞り込み・ページ送りの機能は持たない。',
     },
     usage: `import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@yasmro/schatten'
 
@@ -912,7 +912,7 @@ import { Search } from 'lucide-react'
           },
           {
             en: 'Do not put required information in a Tooltip. On a touch screen there is no hover to reveal it.',
-            ja: '必須の情報は Tooltip に入れない。タッチ操作の画面ではホバーできず、表示されないため。',
+            ja: 'タッチ操作の画面ではホバーできず表示されないので、必須の情報は Tooltip に入れない。',
           },
         ],
       },

@@ -83,7 +83,6 @@ interface Brand {
   faceSerifRole: string
   faceSampleLatin: string
   faceSampleJa: string
-  faceNote: Html
   scaleTitle: string
   scaleLead: Html
   scaleSample: string
@@ -235,7 +234,7 @@ export const ui: Record<Locale, Strings> = {
       mirrorTitle: 'All eleven steps are mirrored',
       mirrorLead:
         'This is not a fact about the <code>-500</code> rung alone. <strong>Every one of the eleven steps matches in lightness and chroma; only the hue parts.</strong> Ink and paper share one ladder.',
-      chromaticRampTitle: 'The chromatic pair rides the same ladder',
+      chromaticRampTitle: 'The chromatic pair has the same eleven steps',
       oklchNote:
         'Everything is defined in OKLCH. The space is perceptually uniform, so “the same lightness” holds <strong>to the eye</strong>, not merely in the arithmetic.',
 
@@ -264,14 +263,12 @@ export const ui: Record<Locale, Strings> = {
         'That duality is not confined to names and colors; it is implemented in the typesetting. Both the sans and the serif role <strong>pair a Latin face with a Japanese face</strong> into a single stack. Being bilingual is the default state.',
       faceSansRole: 'sans — UI and body',
       faceSerifRole: 'serif — headings and long form',
-      faceSampleLatin: 'Shadow &amp; Gradation',
-      faceSampleJa: '陰影と階調',
-      faceNote:
-        'This page cannot load webfonts under the artifact CSP, so a system mincho and gothic stand in. The faces above are what the real site serves.',
+      faceSampleLatin: 'Paper &amp; Ink',
+      faceSampleJa: '紙と墨',
       scaleTitle: 'Eight sizes, six leadings',
       scaleLead:
         'Sizes come from <code>--text-*</code>, leading from <code>--leading-*</code> — public tokens, all in <code>rem</code>.',
-      scaleSample: 'Shadow 陰影',
+      scaleSample: 'Typography 文字組み',
       roleNote:
         'Note that <strong>body / label / heading are not CSS variables</strong>. Size, leading, and weight are three properties, and a single <code>var()</code> cannot carry three — so the roles bind to the <code>.st-text--*</code> class rules instead.',
     },
@@ -356,7 +353,7 @@ export const ui: Record<Locale, Strings> = {
     landing: {
       metaDescription:
         'Schatten design system — React コンポーネントと、フレームワークに依存しない CSS クラス API を、共通のトークン基盤の上に。',
-      heroTitle: '陰影のあるインターフェースを、ふたつの配信層で。',
+      heroTitle: '階調のあるインターフェースを、ふたつの配信層で。',
       heroLead:
         'React のコンポーネントと、素の HTML で使える CSS クラス。Schatten はこの両方を、共通のデザイントークンの上で提供しています。<br>このページ自体も React コンポーネントで組み、ビルド時に静的 HTML へ書き出しています。ブラウザに届くのは、その HTML と配布している CSS 1 枚です。',
       ctaGetStarted: 'Get started',
@@ -372,79 +369,76 @@ export const ui: Record<Locale, Strings> = {
     },
     brand: {
       pageTitle: 'ブランドコンセプト',
-      metaDescription:
-        'Schatten ブランドコンセプト — 紙と墨のあいだに生まれる階調としての陰影。朱・墨・和紙・藍、そして八節。',
-      thesis: '陰影とは、光の不在ではなく、<br>紙と墨のあいだに生まれる<em>階調</em>である。',
+      metaDescription: 'Schatten のブランドコンセプト。紙と墨の階調、朱・墨・和紙・藍、八節。',
+      thesis: '影は、光の不在ではなく、<br>紙と墨のあいだの<em>階調</em>である。',
       origin:
-        'Schatten はドイツ語で「影」。ポートフォリオサイトのブランドコンセプト『陰翳礼讃』(谷崎潤一郎)を、ページ単位ではなくボタンや文字などのコンポーネント単位のデザイントークンとして実装したものである。',
+        'Schatten はドイツ語で「影」。ポートフォリオサイトのコンセプト『陰翳礼讃』(谷崎潤一郎)を、コンポーネント単位のデザイントークンとして実装した。',
       gradationPaper: '紙 · 和紙',
       gradationInk: '墨 · 影',
 
       colorLabel: '色',
-      colorTitle: '四つの色は、和の語彙でできている',
+      colorTitle: '和の名前を持つ四色',
       colorLead:
-        'Schatten の primitive は色名からして和語である。数値は v1.0.0 の実トークン(<code>yasmro/schatten</code> の <a href="https://github.com/yasmro/schatten/blob/v1.0.0/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a>)。',
+        '色名は和の語彙に由来する。数値は v1.0.0 のトークン(<code>yasmro/schatten</code> の <a href="https://github.com/yasmro/schatten/blob/v1.0.0/src/core/tokens/primitives.css"><code>src/core/tokens/primitives.css</code></a>)。',
       colorSwatches: [
         {
           name: '朱',
           token: 'vermillion',
-          role: 'ブランドの主色。鳥居・印章・漆の朱。',
+          role: '第一のブランドカラー。鳥居・印章・漆の朱。',
         },
         {
           name: '墨',
           token: 'sumi',
-          role: '前景・文字。寒色へ倒れた無彩。',
+          role: '文字と前景。寒色寄りの無彩色。',
         },
         {
           name: '和紙',
           token: 'alabaster',
-          role: '面・背景。暖色へ倒れた無彩。',
+          role: '面と背景。暖色寄りの無彩色。',
         },
         {
           name: '藍',
           token: 'indigo',
-          role: '第二のブランド色。彩度を持った墨。',
+          role: '第二のブランドカラー。墨に近い色相で彩度が高い。',
         },
       ],
-      warmCoolTitle: '墨は寒く、紙は暖かい ― 彩度は同じ',
+      warmCoolTitle: '墨は寒色、紙は暖色',
       warmCoolLead:
-        '<code>sumi</code> と <code>alabaster</code> は明度も彩度も同一で、<strong>色相だけが 250 と 70 で正反対</strong>。ほぼ無彩に見えて、墨は青へ、紙は黄へ倒れている。',
+        '<code>sumi</code> と <code>alabaster</code> は明度も彩度も同じで、<strong>色相だけが 250 と 70 で正反対</strong>。墨は青みに、紙は黄みに寄る。',
       warmLabel: '暖 · warm',
       coolLabel: '寒 · cool',
       achromaticLabel: '無彩 C≈0.01',
       chromaticLabel: '有彩',
-      mirrorTitle: '梯子は 11 段すべてが鏡像',
+      mirrorTitle: '全 11 段で明度と彩度が同じ',
       mirrorLead:
-        'これは <code>-500</code> だけの話ではない。<strong>全 11 段で明度と彩度が一致し、分かれるのは色相だけ</strong>。墨と和紙は同じ階調構造を共有する一対である。',
-      chromaticRampTitle: '有彩の二色も、同じ梯子に乗る',
+        '<code>-500</code> だけではない。違うのは<strong>色相だけ</strong>で、墨と和紙は同じ階調を持つ。',
+      chromaticRampTitle: '有彩の二色も 11 段',
       oklchNote:
-        'すべて OKLCH で定義されている。知覚的に均等な色空間なので、「同じ明度」は数値の上だけでなく、<strong>見た目にもそのまま</strong>現れる。',
+        'すべて OKLCH で定義している。数値の明度が同じなら、<strong>見た目の明るさも揃う</strong>。',
 
       seasonsLabel: '季節',
-      seasonsTitle: '八つの季節、ひとつの明度',
+      seasonsTitle: '八つの季節は明度が同じ',
       seasonsLead:
-        '季節(Special テーマ)は <code>--color-theme-*</code> のランプだけを替える。500 段はすべて L 64%、700 段はすべて L 46% に固定されていて、動くのは色相と彩度だけだ。区切りの日付は、古典的な<strong>八節</strong>(四立と二至二分)と一致する。',
+        '季節テーマは <code>--color-theme-*</code> だけを替える。500 段は L 64%、700 段は L 46% で固定で、変わるのは色相と彩度だけ。区切りの日付は<strong>八節</strong>(四立と二至二分)と同じ。',
       seasonNames: ['立春', '春分', '立夏', '夏至', '立秋', '秋分', '立冬', '冬至'],
-      seasonsNote: '巡る季節と、動かない可読性。八節は色だけを運び、明度の梯子には触れない。',
+      seasonsNote: '明度を変えないので、どの季節でも読みやすさは同じ。',
 
       typeLabel: '書体',
-      typeTitle: '二つの言語を、同時に話す',
+      typeTitle: '構造は西洋の工学、表層は和の美学',
       typeLead1:
-        '<strong>構造</strong>は西洋の工学語彙 ― shadcn / Radix / OKLCH / BEM / CVA。<strong>表層</strong>は和の美学語彙 ― 朱・墨・和紙・藍・八節。どちらも他方の装飾ではない。',
+        '<strong>構造</strong>は西洋の工学語彙(shadcn / Radix / OKLCH / BEM / CVA)、<strong>表層</strong>は和の美学語彙(朱・墨・和紙・藍・八節)。どちらも他方の装飾ではない。',
       typeLead2:
-        'この二重性は、名前や色名だけにとどまらない。組版そのものに実装されている。sans も serif も、<strong>欧文フェイスと和文フェイスを明示的に対にして</strong>ひとつのスタックを組む。バイリンガルであることが、既定の状態。',
+        'sans も serif も、<strong>欧文と和文のフェイスを対にして</strong>ひとつのスタックにしている。',
       faceSansRole: 'sans — UI・本文',
       faceSerifRole: 'serif — 見出し・長文',
-      faceSampleLatin: 'Shadow &amp; Gradation',
-      faceSampleJa: '陰影と階調',
-      faceNote:
-        'このページは CSP により Web フォントを読み込めないため、システムの明朝／ゴシックで代替表示している。実サイトでは上記のフェイスが載る。',
-      scaleTitle: '尺度は 8 段、行送りは 6 段',
+      faceSampleLatin: 'Paper &amp; Ink',
+      faceSampleJa: '紙と墨',
+      scaleTitle: 'サイズは 8 段、行送りは 6 段',
       scaleLead:
         'サイズは <code>--text-*</code>、行送りは <code>--leading-*</code>。いずれも <code>rem</code> 基準の公開トークン。',
-      scaleSample: '陰影 Schatten',
+      scaleSample: '文字組み Typography',
       roleNote:
-        'なお <strong>body / label / heading というロールは CSS 変数ではない</strong>。サイズ・行送り・ウェイトの 3 つを 1 つの <code>var()</code> では表せないため、<code>.st-text--*</code> のクラス規則に束ねられている。',
+        '<strong>body / label / heading は CSS 変数ではない</strong>。サイズ・行送り・ウェイトの 3 つを 1 つの <code>var()</code> で表せないので、<code>.st-text--*</code> のクラスにまとめている。',
     },
     components: {
       pageTitle: 'コンポーネント',
