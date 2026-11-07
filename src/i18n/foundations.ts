@@ -21,8 +21,8 @@ export const foundationPages = [
       'Primitive、Theme、Semantic の 3 層と、色の流れ。',
     ),
     lead: l(
-      'Colors flow in one direction. Primitive holds the raw values, Theme holds the ramp a seasonal theme swaps, and Semantic names each color by its use. Components use Semantic and Theme, never Primitive.',
-      '色は一方向に流れる。Primitive は生の値を、Theme は季節テーマで差し替わる階調を持ち、Semantic は用途で色に名前を付ける。コンポーネントは Semantic と Theme を使い、Primitive は直接使わない。',
+      'Colors come in three layers. Primitive holds the raw values, Theme holds the ramp a seasonal theme swaps, and Semantic names each color by its use. Components use Semantic and Theme, never Primitive.',
+      '色は 3 層でできている。Primitive は生の値を、Theme は季節テーマで差し替わる階調を持ち、Semantic は用途で色に名前を付ける。コンポーネントは Semantic と Theme を使い、Primitive は直接使わない。',
     ),
   },
   {
@@ -398,12 +398,21 @@ export const colorScales: readonly { name: string; title: Localized; note?: Loca
 ]
 
 export const colorPage = {
-  flow: [
-    { title: l('Primitive', 'Primitive'), note: l('Raw values', '生の値') },
-    { title: l('Theme', 'Theme'), note: l('Ramp a season swaps', '季節で差し替わる階調') },
-    { title: l('Semantic', 'Semantic'), note: l('Named by use', '用途で名付けた色') },
-    { title: l('Components', 'コンポーネント'), note: l('Fills, borders, text', '塗り・線・文字') },
-  ],
+  flowPrimitive: { title: l('Primitive', 'Primitive'), note: l('Raw values', '生の値') },
+  flowTheme: { title: l('Theme', 'Theme'), note: l('Ramp a season swaps', '季節で差し替わる階調') },
+  flowSemantic: { title: l('Semantic', 'Semantic'), note: l('Named by use', '用途で名付けた色') },
+  flowSolid: {
+    title: l('Semantic (solid)', 'Semantic の solid 系'),
+    note: l('and {components}', 'と {components}'),
+  },
+  flowComponents: {
+    title: l('Components', 'コンポーネント'),
+    note: l('Fills, borders, text', '塗り・線・文字'),
+  },
+  flowCaption: l(
+    '{direct} of the {total} semantic colors point at a Primitive directly. Only the {solid} solid colors go through Theme, and among components only {components} uses Theme directly.',
+    'Semantic の {total} 色のうち {direct} 色は、Primitive を直接参照する。Theme を経由するのは solid 系の {solid} 色だけで、コンポーネントで Theme を直接使うのは {components} だけである。',
+  ),
   primitiveTitle: l('Primitive', 'Primitive'),
   primitiveLead: l(
     'Raw values. They carry no use and do not change between light and dark mode. Theme and Semantic point at these.',
@@ -411,8 +420,8 @@ export const colorPage = {
   ),
   themeTitle: l('Theme', 'Theme'),
   themeLead: l(
-    'The ramp the solid family and Table use. With no seasonal theme it points at alabaster; a seasonal theme swaps all eleven steps at once.',
-    'solid 系と Table が使う階調。季節テーマがなければ alabaster を指し、季節テーマを適用すると 11 段がまとめて差し替わる。',
+    'The ramp the solid colors and {components} use. With no seasonal theme it points at alabaster; a seasonal theme swaps all eleven steps at once.',
+    'solid 系と {components} が使う階調。季節テーマがなければ alabaster を指し、季節テーマを適用すると 11 段がまとめて差し替わる。',
   ),
   semanticTitle: l('Semantic', 'Semantic'),
   semanticLead: l(
@@ -420,10 +429,12 @@ export const colorPage = {
     '用途で名付けた色で、それぞれ Primitive か Theme の段を参照する。参照先はモードで切り替わる。見本の左半分がライト、右半分がダーク。',
   ),
   approxNote: l(
-    'Swatch names are the CSS custom properties without the leading <code>--</code>. Hex values are converted from OKLCH; a value marked ≈ is outside sRGB, so its hex is approximate.',
-    '見本の名前は、CSS 変数名から先頭の <code>--</code> を省いたもの。HEX は OKLCH から変換した値で、≈ の付いた値は sRGB の範囲外にあるため近似値になる。',
+    'Click a swatch to copy its CSS custom property, such as <code>--sumi-500</code>. Names under the swatches leave out the leading <code>--</code>. Hex values are converted from OKLCH; a value marked ≈ is outside sRGB, so its hex is approximate.',
+    '見本をクリックすると、<code>--sumi-500</code> のような CSS 変数名をコピーできる。見本の下の名前は、先頭の <code>--</code> を省いて示す。HEX は OKLCH から変換した値で、≈ の付いた値は sRGB の範囲外にあるため近似値になる。',
   ),
   combinationsTitle: l('Combinations', '組み合わせ'),
+  copyLabel: l('Copy {name}', '{name} をコピー'),
+  copiedLabel: l('Copied', 'コピーしました'),
   light: l('Light', 'ライト'),
   dark: l('Dark', 'ダーク'),
   stateTitle: l('How state tokens work', '状態トークンの仕組み'),

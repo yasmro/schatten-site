@@ -18,6 +18,7 @@ interface Props {
 }
 
 const { locale } = Astro.props
+const copy = (token: string) => c.copyLabel[locale].replace('{name}', token)
 
 const scales = listColorScales()
 const aliases = listPrimitiveAliases()
@@ -33,7 +34,12 @@ if (unknownScales.length > 0) {
   colorScales.map(({ name, title, note }) => (
     <SwatchGroup title={title[locale]} note={note?.[locale]}>
       {scales[name].map((step) => (
-        <Swatch name={`${name}-${step}`} paint={`var(--${name}-${step})`} lines={[hexOf(`--${name}-${step}`)]} />
+        <Swatch
+          token={`--${name}-${step}`}
+          paint={`var(--${name}-${step})`}
+          lines={[hexOf(`--${name}-${step}`)]}
+          copyLabel={copy(`--${name}-${step}`)}
+        />
       ))}
     </SwatchGroup>
   ))
@@ -46,7 +52,12 @@ if (unknownScales.length > 0) {
   ].map(({ title, note, tokens }) => (
     <SwatchGroup title={title} note={note} wide>
       {tokens.map(({ name }) => (
-        <Swatch name={name} paint={`var(--${name})`} lines={[aliasLine(`--${name}`, aliases)]} />
+        <Swatch
+          token={`--${name}`}
+          paint={`var(--${name})`}
+          lines={[aliasLine(`--${name}`, aliases)]}
+          copyLabel={copy(`--${name}`)}
+        />
       ))}
     </SwatchGroup>
   ))

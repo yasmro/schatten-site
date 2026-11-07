@@ -26,6 +26,7 @@ interface Props {
 }
 
 const { locale } = Astro.props
+const copy = (token: string) => c.copyLabel[locale].replace('{name}', token)
 
 const published = listTokens().color.map(({ name }) => name.slice('--color-'.length))
 const listed = colorGroups.flatMap(({ tokens }) => tokens.map(({ name }) => name))
@@ -78,7 +79,8 @@ const firstState = colorGroups.findIndex(({ tokens }) => tokens[0].name === 'des
           const { light, dark } = references[`--color-${name}`]
           return (
             <Swatch
-              name={`color-${name}`}
+              token={`--color-${name}`}
+              copyLabel={copy(`--color-${name}`)}
               paint={[`var(${light})`, `var(${dark})`]}
               lines={[
                 role[locale],

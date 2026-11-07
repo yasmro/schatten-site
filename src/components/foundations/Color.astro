@@ -1,10 +1,17 @@
 ---
-// Color page, ordered the way colors flow: Primitive → Theme → Semantic, then
-// how semantic colors combine. The diagram at the top is that flow.
+// Color page: Primitive → Theme → Semantic, then how semantic colors combine.
+// The diagram shows the two real paths a color takes; its counts and the
+// components named in it are read from the package, so they cannot drift.
 import { Icon, Text } from '@yasmro/schatten'
 import { ArrowRight } from 'lucide-react'
 import { colorPage as c } from '../../i18n/foundations'
 import type { Locale } from '../../i18n/ui'
+import {
+  componentPrimitiveRefs,
+  listColorReferences,
+  listComponents,
+  listTokens,
+} from '../../lib/library.mjs'
 import ColorCombinations from './ColorCombinations.astro'
 import ColorPrimitive from './ColorPrimitive.astro'
 import ColorSemantic from './ColorSemantic.astro'
@@ -16,6 +23,31 @@ interface Props {
 }
 
 const { locale } = Astro.props
+
+const references = Object.entries(listColorReferences()).filter(
+  ([name]) => !name.startsWith('--color-theme-'),
+)
+const viaTheme = references.filter(([, { light, dark }]) =>
+  [light, dark].some((target) => target.startsWith('--color-theme-')),
+)
+const ramp = listTokens()
+  .color.map(({ name }) => name)
+  .filter((name) => name.startsWith('--color-theme-'))
+const names = new Map((await listComponents()).map(({ slug, name }) => [slug, name]))
+const themeUsers = [
+  ...new Set(componentPrimitiveRefs(ramp).map((ref) => names.get(ref.split('.css')[0]) ?? ref)),
+].join(', ')
+const fill = (text: string) =>
+  text
+    .replaceAll('{total}', String(references.length))
+    .replaceAll('{direct}', String(references.length - viaTheme.length))
+    .replaceAll('{solid}', String(viaTheme.length))
+    .replaceAll('{components}', themeUsers)
+
+const paths = [
+  [c.flowPrimitive, c.flowSemantic, c.flowComponents],
+  [c.flowPrimitive, c.flowTheme, c.flowSolid],
+]
 const sections = [
   { id: 'primitive', title: c.primitiveTitle, lead: c.primitiveLead, Content: ColorPrimitive },
   { id: 'theme', title: c.themeTitle, lead: c.themeLead, Content: ColorTheme },
@@ -24,27 +56,56 @@ const sections = [
 ]
 ---
 
-<div class="fnd__section">
-  <ol class="fnd__flow">
+<div class="fnd__section" data-copied-label={c.copiedLabel[locale]}>
+  <div class="fnd__flows">
     {
-      c.flow.map(({ title, note }, i) => (
-        <li>
-          <span class="fnd__flow-box">
-            <Text as="span" variant="label" size="sm">{title[locale]}</Text>
-            <Text as="span" size="xs" color="muted">{note[locale]}</Text>
-          </span>
-          {i < c.flow.length - 1 && <Icon icon={ArrowRight} size="sm" color="subtle" />}
-        </li>
+      paths.map((path) => (
+        <ol class="fnd__flow">
+          {path.map(({ title, note }, i) => (
+            <li>
+              <span class="fnd__flow-box">
+                <Text as="span" variant="label" size="sm">{title[locale]}</Text>
+                <Text as="span" size="xs" color="muted">{fill(note[locale])}</Text>
+              </span>
+              {i < path.length - 1 && <Icon icon={ArrowRight} size="sm" color="subtle" />}
+            </li>
+          ))}
+        </ol>
       ))
     }
-  </ol>
+  </div>
+  <Text as="p" size="sm" color="muted" leading="relaxed" className="fnd__measure">
+    {fill(c.flowCaption[locale])}
+  </Text>
   <Text as="p" size="xs" color="muted" leading="relaxed" className="fnd__measure" set:html={c.approxNote[locale]} />
+  <span class="fnd__sr" aria-live="polite" data-copy-status></span>
 </div>
 
 {
-  sections.map(({ id, title, lead, Content }, i) => (
-    <Section title={title[locale]} lead={lead[locale]} id={id} eyebrow={String(i + 1).padStart(2, '0')}>
+  sections.map(({ id, title, lead, Content }) => (
+    <Section title={title[locale]} lead={fill(lead[locale])} id={id}>
       <Content locale={locale} />
     </Section>
   ))
 }
+
+<script>
+  // Copy a swatch's CSS custom property, then say so in place of its name for
+  // a moment and in the live region for screen readers.
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('[data-copy]')
+    if (!button?.dataset.copy) return
+    await navigator.clipboard.writeText(button.dataset.copy)
+    const label = document.querySelector<HTMLElement>('[data-copied-label]')?.dataset.copiedLabel ?? ''
+    const status = document.querySelector('[data-copy-status]')
+    if (status) status.textContent = `${label}: ${button.dataset.copy}`
+    const name = button.querySelector<HTMLElement>('[data-copy-name]')
+    if (!name || name.dataset.original) return
+    name.dataset.original = name.textContent ?? ''
+    name.textContent = label
+    window.setTimeout(() => {
+      name.textContent = name.dataset.original ?? ''
+      delete name.dataset.original
+    }, 1200)
+  })
+</script>

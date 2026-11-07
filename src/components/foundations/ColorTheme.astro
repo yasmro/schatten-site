@@ -15,6 +15,7 @@ interface Props {
 }
 
 const { locale } = Astro.props
+const copy = (token: string) => c.copyLabel[locale].replace('{name}', token)
 const seasonNames = ui[locale].brand.seasonNames
 const references = listColorReferences()
 const ramp = listTokens()
@@ -28,7 +29,8 @@ const seasons = listSeasons()
   {
     ramp.map((name) => (
       <Swatch
-        name={short(name)}
+        token={name}
+        copyLabel={copy(name)}
         paint={`var(${name})`}
         lines={[`→ ${short(references[name]?.light ?? name)} · ${hexOf(name)}`]}
       />
