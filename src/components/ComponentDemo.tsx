@@ -13,12 +13,15 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
+  DateCalendar,
+  DatePicker,
   Dialog,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  EmptyState,
   Field,
   FieldSet,
   Icon,
@@ -57,7 +60,7 @@ import {
   TooltipTrigger,
   toast,
 } from '@yasmro/schatten'
-import { Plus, Search } from 'lucide-react'
+import { Inbox, Plus, Search } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
 import type { DemoCopy } from '../i18n/ui'
 
@@ -79,6 +82,10 @@ function DialogDemo({ copy }: { copy: DemoCopy }) {
     </>
   )
 }
+
+// A fixed date, so the static HTML and the hydrated demo show the same month
+// whatever day the site was built.
+const DEMO_DATE = '2026-11-14'
 
 const demos: Record<string, (copy: DemoCopy) => ReactNode> = {
   avatar: () => (
@@ -125,6 +132,29 @@ const demos: Record<string, (copy: DemoCopy) => ReactNode> = {
     </Card>
   ),
   checkbox: (copy) => <Checkbox label={copy.terms} defaultChecked />,
+  datecalendar: (copy) => (
+    <DateCalendar
+      locale={copy.calendarLocale}
+      labels={{ previousMonth: copy.previousMonth, nextMonth: copy.nextMonth }}
+      today={DEMO_DATE}
+      defaultValue={DEMO_DATE}
+    />
+  ),
+  datepicker: (copy) => (
+    <Field label={copy.dueDate}>
+      <DatePicker
+        locale={copy.calendarLocale}
+        labels={{
+          previousMonth: copy.previousMonth,
+          nextMonth: copy.nextMonth,
+          openCalendar: copy.openCalendar,
+          invalidDate: copy.invalidDate,
+        }}
+        today={DEMO_DATE}
+        defaultValue={DEMO_DATE}
+      />
+    </Field>
+  ),
   dialog: (copy) => <DialogDemo copy={copy} />,
   dropdownmenu: (copy) => (
     <DropdownMenu>
@@ -138,6 +168,19 @@ const demos: Record<string, (copy: DemoCopy) => ReactNode> = {
         <DropdownMenuItem variant="destructive">{copy.delete}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  ),
+  emptystate: (copy) => (
+    <EmptyState
+      icon={Inbox}
+      title={copy.emptyTitle}
+      description={copy.emptyBody}
+      headingLevel={3}
+      action={
+        <Button variant="primary" icon={Plus}>
+          {copy.newProject}
+        </Button>
+      }
+    />
   ),
   field: (copy) => (
     <Field label={copy.email} description={copy.hint} required>

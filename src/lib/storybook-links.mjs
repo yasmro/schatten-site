@@ -8,23 +8,25 @@
 export const STORYBOOK_ORIGIN = 'https://yasmro.github.io/schatten/storybook/'
 
 /**
- * Storybook story id of an lv1 component's autodocs page. Storybook derives
- * it from the title `Components/lv1/{Name}` via sanitize() — lowercase,
- * non-alphanumerics to `-`. Every lv1 name is plain alphanumeric, so the slug
- * is just the lowercased name.
+ * Storybook story id of a component's autodocs page. Storybook derives it
+ * from the title `Components/{level}/{Name}` via sanitize() — lowercase,
+ * non-alphanumerics to `-`. Every component name is plain alphanumeric, so the
+ * slug is just the lowercased name.
  *
- * @param {string} name - lv1 component name, e.g. "Button", "DropdownMenu"
+ * @param {string} name - component name, e.g. "Button", "DatePicker"
+ * @param {'lv1' | 'lv2'} level
  * @returns {string}
  */
-export function storybookDocsId(name) {
-  return `components-lv1-${name.toLowerCase()}--docs`
+export function storybookDocsId(name, level) {
+  return `components-${level}-${name.toLowerCase()}--docs`
 }
 
 /**
- * Autodocs URL for an lv1 component.
+ * Autodocs URL for a component.
  * @param {string} name
+ * @param {'lv1' | 'lv2'} level
  * @returns {string}
  */
-export function storybookDocsUrl(name) {
-  return `${STORYBOOK_ORIGIN}?path=/docs/${storybookDocsId(name)}`
+export function storybookDocsUrl(name, level) {
+  return `${STORYBOOK_ORIGIN}?path=/docs/${storybookDocsId(name, level)}`
 }

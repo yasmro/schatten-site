@@ -1,4 +1,4 @@
-// Per-component guide copy: one entry per lv1, en + ja side by side, so the two
+// Per-component guide copy: one entry per lv1 / lv2, en + ja side by side, so the two
 // editions cannot differ in shape. `rules` strings carry inline <code> and are
 // injected with `set:html` — authored constants, never user input.
 //
@@ -6,7 +6,7 @@
 // or on an accessibility requirement; props and states stay in Storybook.
 //
 // /components/[slug] renders one page per component the installed package
-// ships, and fails the build when an entry here is missing — a new lv1 cannot
+// ships, and fails the build when an entry here is missing — a new component cannot
 // reach the site without a guide.
 import type { Locale } from './ui'
 
@@ -272,6 +272,97 @@ export const guides: Record<string, ComponentGuide> = {
       },
     ],
   },
+  datecalendar: {
+    category: 'form',
+    summary: {
+      en: 'An always-visible month grid for picking one date. DateRangeCalendar picks a range.',
+      ja: '常に表示される月のカレンダーで、日付をひとつ選ぶ。期間を選ぶときは DateRangeCalendar を使う。',
+    },
+    usage: `import { DateCalendar } from '@yasmro/schatten'
+
+<DateCalendar defaultValue="2026-11-14" onValueChange={setDate} />`,
+    sections: [
+      {
+        title: { en: 'Choosing the control', ja: 'コントロールの選び方' },
+        rules: [
+          {
+            en: 'Use DateCalendar when the calendar stays on the page, as on a booking page. In a form field, use DatePicker, which pairs a typed input with the calendar in a popover.',
+            ja: '予約ページのように、カレンダーを常にページに出しておくときに DateCalendar を使う。フォームの入力欄には、入力とポップオーバーのカレンダーを組み合わせた DatePicker を使う。',
+          },
+          {
+            en: 'Use DateRangeCalendar for a range. Its value is <code>{ from, to }</code>, not a date, so it is a separate component rather than a <code>mode</code> prop.',
+            ja: '期間には DateRangeCalendar を使う。値が日付ではなく <code>{ from, to }</code> なので、<code>mode</code> のような prop ではなく別のコンポーネントになっている。',
+          },
+        ],
+      },
+      {
+        title: { en: 'Values and language', ja: '値と言語' },
+        rules: [
+          {
+            en: 'Values are <code>YYYY-MM-DD</code> strings, not <code>Date</code> objects, so a time zone cannot shift a date by one day. Convert with <code>toDate</code> / <code>toDateString</code> from <code>@yasmro/schatten/date</code>.',
+            ja: '値は <code>Date</code> オブジェクトではなく <code>YYYY-MM-DD</code> の文字列で、タイムゾーンで日付が 1 日ずれることはない。変換には <code>@yasmro/schatten/date</code> の <code>toDate</code> / <code>toDateString</code> を使う。',
+          },
+          {
+            en: 'When you set <code>locale</code>, pass <code>labels</code> in the same language. Otherwise a screen reader reads two languages.',
+            ja: '<code>locale</code> を指定したら、<code>labels</code> も同じ言語で渡す。渡さないと、スクリーンリーダーが 2 つの言語を混ぜて読み上げる。',
+          },
+          {
+            en: 'With server rendering, pass <code>today</code> or <code>defaultMonth</code>, so the server and the browser show the same first month.',
+            ja: 'サーバーで描画するときは <code>today</code> か <code>defaultMonth</code> を渡す。サーバーとブラウザで、最初に表示する月がそろう。',
+          },
+        ],
+      },
+    ],
+  },
+  datepicker: {
+    category: 'form',
+    summary: {
+      en: 'A date input with a calendar in a popover. The typed date and the picked day stay in sync. DateRangePicker takes a range.',
+      ja: '日付の入力欄と、ポップオーバーのカレンダーを組み合わせたもの。入力した日付と選んだ日は同期する。期間は DateRangePicker で選ぶ。',
+    },
+    usage: `import { DatePicker, Field } from '@yasmro/schatten'
+
+<Field label="Due date">
+  <DatePicker name="due" defaultValue="2026-11-14" />
+</Field>`,
+    sections: [
+      {
+        title: { en: 'Label', ja: 'ラベル' },
+        rules: [
+          {
+            en: 'Place the picker in a <code>Field</code>. The Field label names the input of DatePicker, and the group of DateRangePicker’s two inputs. Outside a Field, pass <code>aria-label</code>.',
+            ja: '<code>Field</code> の中に置く。Field のラベルが、DatePicker では入力欄の名前に、DateRangePicker では 2 つの入力欄をまとめたグループの名前になる。Field の外では <code>aria-label</code> を渡す。',
+          },
+        ],
+      },
+      {
+        title: { en: 'Date and time', ja: '日付と時刻' },
+        rules: [
+          {
+            en: 'Add <code>granularity="minute"</code> when the value needs a time. The value becomes a local <code>YYYY-MM-DDTHH:mm</code> with no time zone.',
+            ja: '時刻も必要なときは <code>granularity="minute"</code> を付ける。値は、タイムゾーンを持たないローカルの <code>YYYY-MM-DDTHH:mm</code> になる。',
+          },
+          {
+            en: 'A string from an API or a form is not yet a date value. Check it with <code>isDateValue</code> / <code>isDateTimeValue</code> from <code>@yasmro/schatten/date</code> before passing it.',
+            ja: 'API やフォームから来た文字列は、そのままでは日付の値として渡せない。<code>@yasmro/schatten/date</code> の <code>isDateValue</code> / <code>isDateTimeValue</code> で確かめてから渡す。',
+          },
+          {
+            en: "<code>onValueChange</code> receives <code>''</code> while the input holds an unfinished or invalid date. Treat <code>''</code> as no value.",
+            ja: "入力途中や無効な日付の間、<code>onValueChange</code> には <code>''</code> が渡る。<code>''</code> は値がないものとして扱う。",
+          },
+        ],
+      },
+      {
+        title: { en: 'Without React', ja: 'React を使わない場合' },
+        rules: [
+          {
+            en: 'DatePicker is lv2 and ships for React only. Without React, use <code>&lt;input type="date"&gt;</code>, or <code>&lt;input type="datetime-local"&gt;</code> for a time.',
+            ja: 'DatePicker は lv2 で、React 専用。React を使わないときは <code>&lt;input type="date"&gt;</code> を使う。時刻も必要なら <code>&lt;input type="datetime-local"&gt;</code> を使う。',
+          },
+        ],
+      },
+    ],
+  },
   dialog: {
     category: 'overlay',
     summary: {
@@ -352,6 +443,68 @@ export const guides: Record<string, ComponentGuide> = {
           {
             en: 'When an item’s children are not plain text, pass <code>textValue</code> so typeahead still matches.',
             ja: '項目の中身がプレーンテキストでないときは、キー入力で項目を探せるよう <code>textValue</code> を渡す。',
+          },
+        ],
+      },
+    ],
+  },
+  emptystate: {
+    category: 'feedback',
+    summary: {
+      en: 'Shows that there is nothing here yet: an icon, a title, a description, and the next step.',
+      ja: 'まだ何もないことを示す。アイコン、見出し、説明、次の操作を決まった配置で並べる。',
+    },
+    usage: `import { Button, EmptyState } from '@yasmro/schatten'
+import { Inbox } from 'lucide-react'
+
+<EmptyState
+  icon={Inbox}
+  title="No projects yet"
+  description="Create a project to get started."
+  action={<Button>New project</Button>}
+/>`,
+    sections: [
+      {
+        title: { en: 'Heading and size', ja: '見出しとサイズ' },
+        rules: [
+          {
+            en: 'Set <code>headingLevel</code> to fit the page outline. It defaults to 2, and EmptyState does not guess it.',
+            ja: '<code>headingLevel</code> はページの見出し構造に合わせて指定する。標準値は 2 で、EmptyState が自動で決めることはない。',
+          },
+          {
+            en: 'Pick <code>size</code> by where it sits: <code>sm</code> in a card or a table body, <code>md</code> in a panel or a section, <code>lg</code> for a whole page.',
+            ja: '<code>size</code> は置く場所で選ぶ。カードや表の本体には <code>sm</code>、パネルやセクションには <code>md</code>、ページ全体には <code>lg</code> を使う。',
+          },
+        ],
+      },
+      {
+        title: { en: 'Content', ja: '内容' },
+        rules: [
+          {
+            en: 'The icon is decorative and hidden from screen readers. Say what is empty in <code>title</code>.',
+            ja: 'アイコンは飾りで、スクリーンリーダーには読まれない。何がないのかは <code>title</code> に書く。',
+          },
+          {
+            en: 'Put the step the user can take next in <code>action</code>, usually one Button.',
+            ja: '次にできる操作を <code>action</code> に置く。ふつうは Button をひとつにする。',
+          },
+        ],
+      },
+      {
+        title: { en: 'Announcing a change', ja: '表示の変化を伝える' },
+        rules: [
+          {
+            en: 'When it appears at runtime, as when search results run out, wrap it in an element with <code>role="status"</code> that stays mounted. A status region mounted together with its content is usually not read out.',
+            ja: '検索結果が 0 件になったときのように途中で現れるなら、<code>role="status"</code> を付けた要素で包み、その要素は表示したままにする。中身と一緒に現れた status 領域は、ふつう読み上げられない。',
+          },
+        ],
+      },
+      {
+        title: { en: 'Without React', ja: 'React を使わない場合' },
+        rules: [
+          {
+            en: 'EmptyState is lv2 and ships for React only. Without React, compose the <code>.st-icon</code> / <code>.st-text</code> / <code>.st-btn</code> classes directly.',
+            ja: 'EmptyState は lv2 で、React 専用。React を使わないときは、<code>.st-icon</code> / <code>.st-text</code> / <code>.st-btn</code> のクラスを直接組み合わせる。',
           },
         ],
       },

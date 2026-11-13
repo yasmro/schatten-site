@@ -1,5 +1,5 @@
 ---
-// One page per lv1 the installed package ships: a live example, usage, the
+// One page per lv1 / lv2 the installed package ships: a live example, usage, the
 // guide (src/i18n/guides.ts), and an icon link to Storybook, which is where
 // behaviour is verified and tested.
 //
@@ -27,19 +27,24 @@ import { storybookDocsUrl } from '../../../lib/storybook-links.mjs'
 export async function getStaticPaths() {
   const components = await listComponents()
   return locales.flatMap((locale) =>
-    components.map(({ slug, name }) => {
+    components.map(({ slug, name, level }) => {
       if (!guides[slug]) {
         throw new Error(`no guide for "${slug}" — add it to src/i18n/guides.ts`)
       }
       return {
         params: { locale: locale === defaultLocale ? undefined : locale, slug },
-        props: { locale, slug, name },
+        props: { locale, slug, name, level },
       }
     }),
   )
 }
 
-const { locale, slug, name } = Astro.props as { locale: Locale; slug: string; name: string }
+const { locale, slug, name, level } = Astro.props as {
+  locale: Locale
+  slug: string
+  name: string
+  level: 'lv1' | 'lv2'
+}
 const t = ui[locale]
 const guide = guides[slug]
 const navGroups = groupByCategory(await listComponents()).map(({ id, items }) => ({
@@ -79,7 +84,7 @@ const navGroups = groupByCategory(await listComponents()).map(({ id, items }) =>
           variant="tertiary"
           size="md"
           icon={ExternalLink}
-          href={storybookDocsUrl(name)}
+          href={storybookDocsUrl(name, level)}
           aria-label={t.detail.storybookCta}
           title={t.detail.storybookCta}
           className="detail__storybook"
@@ -168,8 +173,9 @@ const navGroups = groupByCategory(await listComponents()).map(({ id, items }) =>
     gap: var(--spacing-3);
   }
 
-  /* Block-level children (Field, Table, Card, Callout) take the full row. */
+  /* Block-level children (Field, Table, Card, Callout, EmptyState) take the full row. */
   .detail__demo > .st-table,
+  .detail__demo > [class*='st-empty-state'],
   .detail__demo > [class*='st-field'],
   .detail__demo > [class*='st-fieldset'],
   .detail__demo > [class*='st-callout'],
