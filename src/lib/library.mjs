@@ -24,17 +24,19 @@ export function libraryVersion() {
 }
 
 /**
- * Every lv1 component the installed package ships, from two published
- * surfaces that have to agree:
+ * Every component the installed package ships, lv1 and lv2, from two
+ * published surfaces that have to agree:
  *
- * - `dist/css/<slug>.css` — one per-component CSS subpath per lv1. The slug is
- *   the component name lowercased (`dropdownmenu`, `fieldset`), which is also
- *   the slug Storybook derives for `Components/lv1/{Name}`.
- * - the `@yasmro/schatten/components/lv1` namespace — gives the slug back its
- *   display name (`DropdownMenu`). `Toast` is imperative and exports `toast`,
- *   so a lowercase-only match is capitalised.
+ * - `dist/css/<slug>.css` — one per-component CSS subpath per component. The
+ *   slug is the component name lowercased (`dropdownmenu`, `datepicker`), which
+ *   is also the slug Storybook derives for `Components/{level}/{Name}`. A
+ *   subpath can cover a family (`datecalendar` also styles
+ *   `DateRangeCalendar`); the page is named after the family's first member.
+ * - the `@yasmro/schatten/components/lv1` and `/lv2` namespaces — give the slug
+ *   back its display name (`DropdownMenu`) and its level. `Toast` is imperative
+ *   and exports `toast`, so a lowercase-only match is capitalised.
  *
- * @returns {Promise<Array<{ slug: string, name: string }>>}
+ * @returns {Promise<Array<{ slug: string, name: string, level: 'lv1' | 'lv2' }>>}
  */
 export async function listComponents() {
   const slugs = readdirSync(join(distDir(), 'css'))
@@ -42,20 +44,22 @@ export async function listComponents() {
     .map((f) => f.slice(0, -'.css'.length))
     .sort()
 
-  const lv1 = await import('@yasmro/schatten/components/lv1')
-  const exportNames = Object.keys(lv1)
+  const levels = /** @type {const} */ ({
+    lv1: Object.keys(await import('@yasmro/schatten/components/lv1')),
+    lv2: Object.keys(await import('@yasmro/schatten/components/lv2')),
+  })
 
   return slugs.map((slug) => {
-    const matches = exportNames.filter((k) => k.toLowerCase() === slug)
-    const name =
-      matches.find((k) => /^[A-Z]/.test(k)) ??
-      (matches[0] ? matches[0][0].toUpperCase() + matches[0].slice(1) : null)
-    if (!name) {
-      throw new Error(
-        `@yasmro/schatten ships css/${slug}.css but exports no matching lv1 component — the package layout changed; update src/lib/library.mjs`,
-      )
+    for (const level of /** @type {const} */ (['lv1', 'lv2'])) {
+      const matches = levels[level].filter((k) => k.toLowerCase() === slug)
+      const name =
+        matches.find((k) => /^[A-Z]/.test(k)) ??
+        (matches[0] ? matches[0][0].toUpperCase() + matches[0].slice(1) : null)
+      if (name) return { slug, name, level }
     }
-    return { slug, name }
+    throw new Error(
+      `@yasmro/schatten ships css/${slug}.css but exports no matching lv1 / lv2 component — the package layout changed; update src/lib/library.mjs`,
+    )
   })
 }
 

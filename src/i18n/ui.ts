@@ -149,6 +149,16 @@ export interface DemoCopy {
   toastTitle: string
   cardTitle: string
   cardBody: string
+  /** BCP 47 tag for the date demos; `labels` below are in the same language. */
+  calendarLocale: string
+  previousMonth: string
+  nextMonth: string
+  openCalendar: string
+  invalidDate: string
+  dueDate: string
+  emptyTitle: string
+  emptyBody: string
+  newProject: string
 }
 
 interface Strings {
@@ -340,6 +350,15 @@ export const ui: Record<Locale, Strings> = {
       toastTitle: 'Saved',
       cardTitle: 'Usage',
       cardBody: '12 of 20 seats in use.',
+      calendarLocale: 'en-US',
+      previousMonth: 'Previous month',
+      nextMonth: 'Next month',
+      openCalendar: 'Choose date',
+      invalidDate: 'Enter a valid date.',
+      dueDate: 'Due date',
+      emptyTitle: 'No projects yet',
+      emptyBody: 'Create a project to get started.',
+      newProject: 'New project',
     },
   },
   ja: {
@@ -508,6 +527,15 @@ export const ui: Record<Locale, Strings> = {
       toastTitle: '保存しました',
       cardTitle: '利用状況',
       cardBody: '20 席中 12 席を使用中。',
+      calendarLocale: 'ja-JP',
+      previousMonth: '前の月',
+      nextMonth: '次の月',
+      openCalendar: '日付を選ぶ',
+      invalidDate: '正しい日付を入力してください。',
+      dueDate: '期日',
+      emptyTitle: 'プロジェクトはまだありません',
+      emptyBody: 'プロジェクトを作成して始めましょう。',
+      newProject: '新しいプロジェクト',
     },
   },
 }

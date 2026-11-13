@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Drift gate for the site → Storybook links. The site lists every lv1 the
+// Drift gate for the site → Storybook links. The site lists every lv1 / lv2 the
 // installed package ships and links each to its Storybook docs page; this
 // script asserts those pages exist on the DEPLOYED Storybook by reading its
 // index.json — the same manifest Storybook's own sidebar renders from.
@@ -24,7 +24,7 @@ const ids = new Set(Object.keys(index.entries ?? {}))
 
 const components = await listComponents()
 const failures = components
-  .map((c) => ({ ...c, id: storybookDocsId(c.name) }))
+  .map((c) => ({ ...c, id: storybookDocsId(c.name, c.level) }))
   .filter((c) => !ids.has(c.id))
   .map((c) => `${c.name}: story id "${c.id}" not in ${indexUrl}`)
 
